@@ -7,9 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -156,17 +157,7 @@ class User
         return $this;
     }
 
-    public function getCivilite(): ?Role
-    {
-        return $this->civilite;
-    }
 
-    public function setCivilite(?Role $civilite): static
-    {
-        $this->civilite = $civilite;
-
-        return $this;
-    }
 
     public function getPays(): ?Pays
     {
@@ -233,6 +224,18 @@ class User
         if ($this->conversation->removeElement($conversation)) {
             $conversation->removeUser($this);
         }
+
+        return $this;
+    }
+
+    public function getCivilite(): ?Civilite
+    {
+        return $this->civilite;
+    }
+
+    public function setCivilite(?Civilite $civilite): static
+    {
+        $this->civilite = $civilite;
 
         return $this;
     }
