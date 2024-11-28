@@ -15,7 +15,10 @@ class UserRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, User::class);
     }
-
+    public function findOneByRole(string $role): ?User
+    {
+        return $this->findOneBy(['role' => $role]);
+    }
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

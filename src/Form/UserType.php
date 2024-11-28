@@ -24,37 +24,42 @@ class UserType extends AbstractType
     {
         $builder
             ->add('firstName',TextType::class,[
-                'label' => 'Prénom',
+                'label' => 'Prénom *',
+
+
             ])
             ->add('name',TextType::class,[
-                'label' => 'Nom',
+                'label' => 'Nom *',
             ])
             ->add('dateOfBirth', DateType::class,[
-                'label' => 'Date de naissance',
+                'label' => 'Date de naissance *',
                 ]
 
             )
             ->add('phone',TelType::class,[
-                'label'=> 'Téléphone portable'
+                'label'=> 'Téléphone portable',
+                'required' => false,
+
             ])
             ->add('email',EmailType::class,[
-                'label' => 'Email',
+                'label' => 'Email *',
             ])
             ->add('password',PasswordType::class,[
-                'label' => 'Mot de passe',
+                'label' => 'Mot de passe *',
+
             ])
 
             ->add('civilite', EntityType::class, [
                 'class' => Civilite::class,
                 'choice_label' => 'civiliteName',
                 'multiple' => false,
-                'label' => 'Votre civilité',
+                'label' => 'Votre civilité *',
             ])
             ->add('pays', EntityType::class, [
                 'class' => Pays::class,
                 'choice_label' => 'namePays',
                 'multiple' => false,
-                'label' => 'Votre pays de résidence',
+                'label' => 'Votre pays de résidence *',
             ])
 
         ;

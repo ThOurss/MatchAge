@@ -8,9 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements PasswordAuthenticatedUserInterface
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,26 +20,64 @@ class User implements PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(
+        message: 'Veuillez renseigner votre prénom'
+    )]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(
+        message: 'Veuillez renseigner votre nom'
+    )]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(
+        message: 'Veuillez renseigner votre date de naissance'
+    )]
     private ?\DateTimeInterface $dateOfBirth = null;
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 250)]
+    #[ORM\Column(length: 250, unique:true)]
+    #[Assert\NotBlank(
+        message: 'Veuillez renseigner votre adresse email'
+    )]
+    #[Assert\Email(
+         message:"L'adresse email '{{ value }}' n'est pas valide."
+     )]
     private ?string $email = null;
 
+
     #[ORM\Column(length: 250)]
+    #[Assert\Length(
+     min: 8,
+     max: 4096,
+     minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.",
+     maxMessage: "Le mot de passe est trop long."
+    )]
+    #[Assert\Regex(
+         pattern:"/[A-Z]/",
+         message:"Le mot de passe doit contenir au moins une lettre majuscule."
+     )]
+     #[Assert\Regex(
+         pattern:"/[a-z]/",
+         message:"Le mot de passe doit contenir au moins une lettre minuscule."
+     )]
+     #[Assert\Regex(
+         pattern:"/\d/",
+         message:"Le mot de passe doit contenir au moins un chiffre."
+     )]
+     #[Assert\Regex(
+         pattern:"/[\W]/",
+         message:"Le mot de passe doit contenir au moins un caractère spécial (par exemple, @, #, $, etc.)."
+     )]
     private ?string $password = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
-
     #[ORM\ManyToOne(inversedBy: 'user')]
     private ?Civilite $civilite = null;
 
@@ -145,17 +185,7 @@ class User implements PasswordAuthenticatedUserInterface
         $this->user = $user;
     }
 
-    public function getRole(): ?Role
-    {
-        return $this->role;
-    }
 
-    public function setRole(?Role $role): static
-    {
-        $this->role = $role;
-
-        return $this;
-    }
 
 
 
@@ -241,6 +271,36 @@ class User implements PasswordAuthenticatedUserInterface
     }
 
 
+
+
+    public function getRoles(): array
+    {
+        return [$this->role?->getRoleName() ?? 'ROLE_USER'];
+    }
+
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRole(): ?Role
+    {
+        return $this->role;
+    }
+
+    public function setRole(?Role $role): static
+    {
+        $this->role = $role;
+
+        return $this;
+    }
 
 
 }

@@ -43,14 +43,12 @@ class Role
         return $this;
     }
 
+    /**
+     * @return Collection<int, User>
+     */
     public function getUser(): Collection
     {
         return $this->user;
-    }
-
-    public function setUser(Collection $user): void
-    {
-        $this->user = $user;
     }
 
     public function addUser(User $user): static
@@ -74,4 +72,6 @@ class Role
 
         return $this;
     }
+
+
 }
