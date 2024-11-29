@@ -11,3 +11,9 @@ body form{
     padding: 1.5rem;
     border-radius: 10px;
 }
+body .logo-page-accueil{
+    width: 13rem;
+}
+body .logo-page-accueil img{
+    width: 100%;
+}

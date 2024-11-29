@@ -40,7 +40,13 @@
 
     <a href="{{ path('app_user_index') }}">back to list</a>
 
-    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+{% if userRole.role.roleName == 'Admin' %}
+    <a href="{{ path('admin_change_role',{'id':user.id}) }}">Aller au tableau de bord admin</a>
+    {% else %}
+        <a href="{{ path('app_user_edit', {'id': user.id}) }}">Aller au tableau de bord utilisateur</a>
+    {% endif %}
+
+
 
     {{ include('user/_delete_form.html.twig') }}
 {% endblock %}
