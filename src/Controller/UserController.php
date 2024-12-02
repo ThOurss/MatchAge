@@ -38,7 +38,7 @@ final class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-$user->setRole($role);
+            $user->setRole($role);
             $plainPassword = $form->get('password')->getData();
 
             // Hachez le mot de passe
@@ -103,6 +103,7 @@ $user->setRole($role);
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
+
 
 
 }

@@ -19,6 +19,17 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['role' => $role]);
     }
+
+    public function findSearchingUser(int $currentUserId): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.isSearching = true')
+            ->andWhere('u.id != :currentUserId')
+            ->setParameter('currentUserId', $currentUserId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

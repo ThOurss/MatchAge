@@ -75,6 +75,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
      )]
     private ?string $password = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private $isSearching = false;
+
     #[ORM\ManyToOne(inversedBy: 'user')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
@@ -298,6 +301,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setRole(?Role $role): static
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    public function isSearching(): ?bool
+    {
+        return $this->isSearching;
+    }
+
+    public function setSearching(bool $isSearching): static
+    {
+        $this->isSearching = $isSearching;
 
         return $this;
     }
