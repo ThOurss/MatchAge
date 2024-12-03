@@ -8,37 +8,58 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MatchController extends AbstractController
 {
-    #[Route('/search', name: 'search_users')]
-    public function search(EntityManagerInterface $em): JsonResponse
+    #[Route('/search', name: 'start_search', methods: ['POST'])]
+    public function startSearch(EntityManagerInterface $em): JsonResponse
     {
-        $currentUser = $this->getUser(); // Récupère l'utilisateur connecté.
-        $currentUser->setSearching(true);
+        $user = $this->getUser(); // Utilisateur connecté.
+
+        $user->setSearching(true);
         $em->flush();
 
-        // Trouve un autre utilisateur en recherche.
-        $matchUser = $em->getRepository(User::class)->findSearchingUser($currentUser->getId());
+        return new JsonResponse(['status' => 'search_started']);
+    }
 
-        if ($matchUser) {
-            // Crée une correspondance.
-            $match = new MatchUser();
-            $match->setUser1($currentUser);
-            $match->setUser2($matchUser);
+    #[Route('/find-match', name: 'find_match', methods: ['GET'])]
+    public function findMatch(EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
 
-            // Marque les deux utilisateurs comme non en recherche.
-            $currentUser->setSearching(false);
-            $matchUser->setSearching(false);
-
-            $em->persist($match);
-            $em->flush();
-
-            return new JsonResponse(['status' => 'matched', 'matchId' => $match->getId()]);
+        // Vérifier que l'utilisateur est en recherche
+        $currentUser = $em->getRepository(User::class)->find($user->getId());
+        if (!$currentUser || !$currentUser->isSearching()) {
+            return new JsonResponse(['status' => 'not_searching']);
         }
 
-        return new JsonResponse(['status' => 'waiting']);
+        // Rechercher un autre utilisateur
+        $match = $em->getRepository(User::class)->findSearchingUser($currentUser->getId());
+
+        if ($match) {
+            // Mettre à jour le statut des deux utilisateurs
+            $currentUser->setSearching(false);
+            $match->setSearching(false);
+
+            // Enregistrer le match pour les deux utilisateurs
+            $currentUser->setMatchedUser($match);
+            $match->setMatchedUser($currentUser);
+
+            $em->flush();
+
+            return new JsonResponse([
+                'status' => 'match_found',
+                'user' => [
+                    'id' => $match->getId(),
+                    'firstname' => $match->getFirstName(),
+                ],
+            ]);
+        }
+
+        return new JsonResponse(['status' => 'no_match']);
     }
+
 }
 

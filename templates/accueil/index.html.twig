@@ -15,22 +15,42 @@
         <button id="search-button">Lancer une recherche</button>
         <button>Lancer une recherche avec filtre</button>
     </div>
-
+<div id="result"></div>
     <script>
-        document.getElementById('search-button').addEventListener('click', () => {
-            setInterval(() => {
-                fetch('/search', { method: 'POST' })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'matched') {
+        let searchInterval = null;
 
-                            alert('Vous avez trouvé une correspondance !');
-                            clearInterval(this); // Arrête le polling.
+        function startSearch() {
+            // Envoyer la demande de recherche au backend.
+            fetch('/search', { method: 'POST' })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.status === 'search_started') {
+                        // Relance la recherche toutes les 5 secondes.
+                        searchInterval = setInterval(findMatch, 5000);
+                    }
+                });
+        }
 
-                        }
-                    });
-            }, 5000);
-        });
+        function findMatch() {
+            fetch('/find-match')
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.status === 'match_found') {
+                        clearInterval(searchInterval); // Arrête les relances.
+                        displayMatch(data.user); // Affiche les informations du match.
+                    }
+                });
+        }
+
+        function displayMatch(user) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+        <p>Match trouvé : ${user.firstname}</p>
+    `;
+        }
+
+        // Lancer la recherche au clic.
+        document.getElementById('search-button').addEventListener('click', startSearch);
     </script>
 
 {% endblock %}

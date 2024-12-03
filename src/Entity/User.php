@@ -74,6 +74,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
          message:"Le mot de passe doit contenir au moins un caractère spécial (par exemple, @, #, $, etc.)."
      )]
     private ?string $password = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private $matchedUser;
 
     #[ORM\Column(type: 'boolean')]
     private $isSearching = false;
@@ -313,6 +316,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setSearching(bool $isSearching): static
     {
         $this->isSearching = $isSearching;
+
+        return $this;
+    }
+
+    public function getMatchedUser(): ?self
+    {
+        return $this->matchedUser;
+    }
+
+    public function setMatchedUser(?self $matchedUser): static
+    {
+        $this->matchedUser = $matchedUser;
 
         return $this;
     }
