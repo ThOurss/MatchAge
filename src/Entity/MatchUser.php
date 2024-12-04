@@ -18,19 +18,21 @@ class MatchUser
     {
         return $this->id;
     }
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $user1;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'matchUsers')]
+    private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $user2;
+    #[ORM\ManyToOne(targetEntity: UserMatch::class, inversedBy: 'matchUsers')]
+    private ?UserMatch $match = null;
+
+
 
     #[ORM\Column(type: 'datetime')]
     private $matchedAt;
 
-    public function __construct()
+    public function __construct(?User $user, ?UserMatch $match)
     {
+        $this->user = $user;
+        $this->match = $match;
         $this->matchedAt = new \DateTime();
     }
 
@@ -46,27 +48,31 @@ class MatchUser
         return $this;
     }
 
-    public function getUser1(): ?User
+    public function getUser(): ?User
     {
-        return $this->user1;
+        return $this->user;
     }
 
-    public function setUser1(?User $user1): static
+    public function setUser(?User $user): static
     {
-        $this->user1 = $user1;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getUser2(): ?User
+    public function getMatch(): ?UserMatch
     {
-        return $this->user2;
+        return $this->match;
     }
 
-    public function setUser2(?User $user2): static
+    public function setMatch(?UserMatch $match): static
     {
-        $this->user2 = $user2;
+        $this->match = $match;
 
         return $this;
     }
+
+
+
+
 }

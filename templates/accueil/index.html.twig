@@ -17,40 +17,29 @@
     </div>
 <div id="result"></div>
     <script>
-        let searchInterval = null;
-
-        function startSearch() {
-            // Envoyer la demande de recherche au backend.
-            fetch('/search', { method: 'POST' })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.status === 'search_started') {
-                        // Relance la recherche toutes les 5 secondes.
-                        searchInterval = setInterval(findMatch, 5000);
-                    }
-                });
-        }
-
-        function findMatch() {
-            fetch('/find-match')
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.status === 'match_found') {
-                        clearInterval(searchInterval); // Arrête les relances.
-                        displayMatch(data.user); // Affiche les informations du match.
-                    }
-                });
-        }
-
-        function displayMatch(user) {
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchButton = document.getElementById('search-button');
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `
-        <p>Match trouvé : ${user.firstname}</p>
-    `;
-        }
 
-        // Lancer la recherche au clic.
-        document.getElementById('search-button').addEventListener('click', startSearch);
+            searchButton.addEventListener('click', () => {
+                const interval = setInterval(() => {
+                    fetch('/search', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                clearInterval(interval);
+                                resultDiv.innerHTML = `Match found: ${data.match.name}`;
+                            } else {
+                                resultDiv.innerHTML = 'Searching for a match...';
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }, 5000); // Relance toutes les 5 secondes
+            });
+        });
     </script>
 
 {% endblock %}

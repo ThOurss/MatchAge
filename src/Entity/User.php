@@ -74,9 +74,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
          message:"Le mot de passe doit contenir au moins un caractère spécial (par exemple, @, #, $, etc.)."
      )]
     private ?string $password = null;
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private $matchedUser;
+    #[ORM\OneToMany(targetEntity: MatchUser::class, mappedBy: 'user')]
+    private Collection $matchUsers;
 
     #[ORM\Column(type: 'boolean')]
     private $isSearching = false;
@@ -102,6 +101,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         $this->signalements = new ArrayCollection();
         $this->conversation = new ArrayCollection();
+        $this->matchUsers = new ArrayCollection();
     }
 
 
@@ -320,17 +320,39 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function getMatchedUser(): ?self
+    /**
+     * @return Collection<int, MatchUser>
+     */
+    public function getMatchUsers(): Collection
     {
-        return $this->matchedUser;
+        return $this->matchUsers;
     }
 
-    public function setMatchedUser(?self $matchedUser): static
+    public function addMatchUser(MatchUser $matchUser): static
     {
-        $this->matchedUser = $matchedUser;
+        if (!$this->matchUsers->contains($matchUser)) {
+            $this->matchUsers->add($matchUser);
+            $matchUser->setUser($this);
+        }
 
         return $this;
     }
+
+    public function removeMatchUser(MatchUser $matchUser): static
+    {
+        if ($this->matchUsers->removeElement($matchUser)) {
+            // set the owning side to null (unless already changed)
+            if ($matchUser->getUser() === $this) {
+                $matchUser->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
 
 
 }
