@@ -6,6 +6,8 @@ namespace App\Controller;
 use App\Entity\MatchUser;
 use App\Entity\User;
 use App\Entity\UserMatch;
+use App\Form\SearchType;
+use App\Repository\UserRepository;
 use App\Service\MatchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,26 +36,49 @@ class MatchController extends AbstractController
 
     }*/
 
-    #[Route('/search', name: 'search', methods: ['POST'])]
-    public function search(Request $request,Security $security, MatchService $matchService): JsonResponse
-    {
-        $currentUser = $security->getUser();
-        if (!$currentUser){
-            return new JsonResponse(['status' => 'no_connect']);
-        }
-        $match = $matchService->findMatch($currentUser);
+    #[Route('/search', name: 'user_searchhhh', methods: ['GET', 'POST'])]
+    public function search(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        MatchService $matchService
+    ): Response {
 
-        if ($match) {
-            return new JsonResponse([
-                'success' => true,
-                'match' => [
-                    'id' => $match->getId(),
-                    'name' => $match->getName(),
-                ],
+        $form = $this->createForm(SearchType::class);
+        $form->handleRequest($request);
+        $matches=[];
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+
+            if (!$user) {
+                return $this->redirectToRoute('app_login');
+            }
+            $user->setSearching(true);
+            $entityManager->flush();
+
+            // Trouver un match
+            $matches = $matchService->findMatch($user);
+
+            if ($matches) {
+                // Désactiver `isSearching` pour les deux utilisateurs
+                $user->setSearching(false);
+                $matches->setSearching(false);
+                $entityManager->flush();
+
+                return $this->render('accueil/index.html.twig', [
+                    'match' => $matches,
+                ]);
+            }
+
+            return $this->render('accueil/index.html.twig', [
+                'match' => $matches,
+                'message' => 'Aucun utilisateur trouvé.',
             ]);
         }
-
-        return new JsonResponse(['success' => false]);
+dump($matches);
+        return $this->render('accueil/index.html.twig', [
+            'form' => $form->createView(),
+            'match' => $matches,
+        ]);
     }
 
     #[Route('/find-match', name: 'find_match', methods: ['GET'])]

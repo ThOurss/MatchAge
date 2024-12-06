@@ -6,7 +6,9 @@ use App\Repository\MatchUserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: MatchUserRepository::class)]
+
 class MatchUser
 {
     #[ORM\Id]
@@ -18,21 +20,23 @@ class MatchUser
     {
         return $this->id;
     }
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'matchUsers')]
-    private ?User $user = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'matchesAsUser1')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user1 = null;
 
-    #[ORM\ManyToOne(targetEntity: UserMatch::class, inversedBy: 'matchUsers')]
-    private ?UserMatch $match = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'matchesAsUser2')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user2 = null;
 
 
 
     #[ORM\Column(type: 'datetime')]
     private $matchedAt;
 
-    public function __construct(?User $user, ?UserMatch $match)
+    public function __construct(?User $user1, ?User $user2)
     {
-        $this->user = $user;
-        $this->match = $match;
+        $this->user1 = $user1;
+        $this->user2 = $user2;
         $this->matchedAt = new \DateTime();
     }
 
@@ -48,31 +52,29 @@ class MatchUser
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser1(): ?User
     {
-        return $this->user;
+        return $this->user1;
     }
 
-    public function setUser(?User $user): static
+    public function setUser1(?User $user1): static
     {
-        $this->user = $user;
+        $this->user1 = $user1;
 
         return $this;
     }
 
-    public function getMatch(): ?UserMatch
+    public function getUser2(): ?User
     {
-        return $this->match;
+        return $this->user2;
     }
 
-    public function setMatch(?UserMatch $match): static
+    public function setUser2(?User $user2): static
     {
-        $this->match = $match;
+        $this->user2 = $user2;
 
         return $this;
     }
-
-
 
 
 }

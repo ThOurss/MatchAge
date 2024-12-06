@@ -12,34 +12,15 @@
         <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge">
     </div>
     <div>
-        <button id="search-button">Lancer une recherche</button>
+
+        {{ form_start(form) }}
+
+        {{ form_end(form) }}
+
+
         <button>Lancer une recherche avec filtre</button>
     </div>
 <div id="result"></div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const searchButton = document.getElementById('search-button');
-            const resultDiv = document.getElementById('result');
 
-            searchButton.addEventListener('click', () => {
-                const interval = setInterval(() => {
-                    fetch('/search', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                clearInterval(interval);
-                                resultDiv.innerHTML = `Match found: ${data.match.name}`;
-                            } else {
-                                resultDiv.innerHTML = 'Searching for a match...';
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
-                }, 5000); // Relance toutes les 5 secondes
-            });
-        });
-    </script>
 
 {% endblock %}

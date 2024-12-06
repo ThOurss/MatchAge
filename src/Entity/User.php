@@ -80,6 +80,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: 'boolean')]
     private $isSearching = false;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private ?int $version = null;
+
     #[ORM\ManyToOne(inversedBy: 'user')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
@@ -346,6 +350,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
                 $matchUser->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getVersion(): ?int
+    {
+        return $this->version;
+    }
+
+    public function setVersion(int $version): static
+    {
+        $this->version = $version;
 
         return $this;
     }

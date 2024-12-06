@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% if matchUser  %}
+
+        <h2>Utilisateur trouvé :</h2>
+
+        <p>Nom :{{ matchUser.name}} </p>
+        <p>Email : {{ matchUser.firstName }}</p>
+
+    {% elseif message is defined %}
+        <p>{{ message }}</p>
+    {% endif %}
+{% endblock %}
