@@ -11,6 +11,7 @@ use App\Repository\UserMatchRepository;
 use App\Repository\UserRepository;
 use App\Service\MatchService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,44 +20,23 @@ use Symfony\Component\Routing\Attribute\Route;
 class AccueilController extends AbstractController
 {
     #[Route('/', name: 'app_accueil')]
-    public function index(Request $request,
+    public function index(Request                $request,
                           EntityManagerInterface $entityManager,
-                          MatchService $matchService): Response
+                          MatchService           $matchService): Response
     {
         $form = $this->createForm(SearchType::class);
         $form->handleRequest($request);
-        $matches=[];
+        $matches = [];
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser();
+            $user = $this->getUser(); // Utilisateur connecté
 
-
-            if (!$user) {
-                return $this->redirectToRoute('app_login');
-            }
-            try{
-                $matches=$matchService->searchForMatch($user);
-                if($matches){
-                    return $this->redirectToRoute('user_search',[
-                        'id' => $matches->getId(),
-                    ]);
-                }
-                return $this->render('accueil/index.html.twig', [
-                    'form' => $form->createView(),
-                    'match' => $matches,
-                ]);
-            }catch (\Exception $e) {
-                return $this->render('accueil/index.html.twig', [
-                    'form' => $form->createView(),
-                    'match' => $matches,
-                ]);
+            if (!$user->isSearching()) {
+                $user->setSearching(true);
+                $user->setSearchComplete(false);
+                $entityManager->flush();
             }
 
-
-
-
-
-
-
+            return $this->redirectToRoute('search_progress');
 
 
         }
@@ -67,23 +47,71 @@ class AccueilController extends AbstractController
         ]);
     }
 
-
- #[Route('/search_result/{id}', name: 'user_search', methods: ['GET', 'POST'])]
-    public function search(User $user) {
-
-
-
-        return $this->render('accueil/show.html.twig',[
-            'matchUser'=>$user,
-        ]);
-    }
-    #[Route('/trigger-action', name: 'trigger_action', methods: ['GET', 'POST'])]
-    public function triggerAction(): Response
+    #[route('/search', name: 'search_progress')]
+    public function search(EntityManagerInterface $entityManager): Response
     {
-        // Logique de l'action à déclencher
-        // Par exemple, envoyer un email, mettre à jour une base de données, etc.
-        return $this->json([
-            'message' => 'Action déclenchée avec succès !',
+        $user = $this->getUser(); // Utilisateur connecté
+
+        if (!$user->isSearching()) {
+    if($user->isSearchComplete()){
+
+        return $this->render('accueil/match_found.html.twig', [
+            'match' => $entityManager->getRepository(MatchUser::class)->findOneBy(['user1' => $user->getId()]),
         ]);
     }
+            return $this->redirectToRoute('app_accueil');
+        }
+
+        // Récupérer les utilisateurs en recherche
+        $query = $entityManager->createQuery(
+            'SELECT u FROM App\Entity\User u WHERE u.isSearching = true AND u.id != :userId'
+        )->setParameter('userId', $user->getId());
+
+        $potentialMatches = $query->getResult();
+
+        if (!empty($potentialMatches)) {
+
+            try {
+                $match = new MatchUser();
+                $match->setUser1($user);
+                $match->setUser2($potentialMatches[0]);
+
+                $user->setSearching(false); // Arrêter la recherche pour l'utilisateur
+                $potentialMatches[0]->setSearching(false); // Arrêter la recherche pour l'autre utilisateur
+                $user->setSearchComplete(true);
+                $potentialMatches[0]->setSearchComplete(true);
+                $entityManager->persist($match);
+
+                $entityManager->flush();
+
+            } catch (OptimisticLockException $e) {
+
+                // Gérer le conflit (par exemple, relancer la recherche)
+                return $this->redirectToRoute('search_progress');
+            }
+            // Associer avec le premier utilisateur trouvé
+
+
+
+            return $this->render('accueil/match_found.html.twig', [
+                'match' => $match,
+            ]);
+        }
+
+        // Si aucun match trouvé, continuer la recherche
+        return $this->render('accueil/search_progress.html.twig');
+    }
+    #[route('/cancel_search', name: 'search_cancel')]
+    public function cancelSearch(EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+
+        if ($user->isSearching()) {
+            $user->setSearching(false);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_accueil');
+    }
+
 }

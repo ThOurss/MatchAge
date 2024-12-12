@@ -6,6 +6,7 @@ use App\Entity\MatchUser;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
+use Symfony\Component\HttpFoundation\Response;
 
 class MatchService
 {
@@ -77,4 +78,5 @@ class MatchService
             throw $e;
         }
     }
+
 }

@@ -79,10 +79,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(type: 'boolean')]
     private $isSearching = false;
-
-    #[ORM\Version]
-    #[ORM\Column(type: 'integer')]
-    private ?int $version = null;
+#[ORM\Column(type: 'boolean')]
+private $searchComplete =true;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
     #[ORM\JoinColumn(nullable: false)]
@@ -354,17 +352,19 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function getVersion(): ?int
+    public function isSearchComplete(): ?bool
     {
-        return $this->version;
+        return $this->searchComplete;
     }
 
-    public function setVersion(int $version): static
+    public function setSearchComplete(bool $searchComplete): static
     {
-        $this->version = $version;
+        $this->searchComplete = $searchComplete;
 
         return $this;
     }
+
+
 
 
 

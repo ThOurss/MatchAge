@@ -20,23 +20,27 @@ class MatchUser
     {
         return $this->id;
     }
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'matchesAsUser1')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user1 = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'matchesAsUser2')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user2 = null;
+
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private ?int $version = null;
+
 
 
 
     #[ORM\Column(type: 'datetime')]
     private $matchedAt;
 
-    public function __construct(?User $user1, ?User $user2)
+    public function __construct()
     {
-        $this->user1 = $user1;
-        $this->user2 = $user2;
+
         $this->matchedAt = new \DateTime();
     }
 
@@ -48,6 +52,18 @@ class MatchUser
     public function setMatchedAt(\DateTimeInterface $matchedAt): static
     {
         $this->matchedAt = $matchedAt;
+
+        return $this;
+    }
+
+    public function getVersion(): ?int
+    {
+        return $this->version;
+    }
+
+    public function setVersion(int $version): static
+    {
+        $this->version = $version;
 
         return $this;
     }
@@ -75,6 +91,8 @@ class MatchUser
 
         return $this;
     }
+
+
 
 
 }
