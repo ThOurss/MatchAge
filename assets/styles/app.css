@@ -1,19 +1,27 @@
 body {
     background-color: skyblue;
 }
-.img-logo{
+
+.img-logo {
     width: 3rem;
 }
-body form{
+
+body form {
     width: 50%;
     margin: 0 auto;
     box-shadow: 1px 1px 5px #000000;
     padding: 1.5rem;
     border-radius: 10px;
 }
-body .logo-page-accueil{
+
+body .logo-page-accueil {
     width: 13rem;
 }
-body .logo-page-accueil img{
+
+body .logo-page-accueil img {
     width: 100%;
+}
+
+.test {
+    color: yellow;
 }

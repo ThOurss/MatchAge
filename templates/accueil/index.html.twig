@@ -9,7 +9,7 @@
     <h1>MatchAge </h1>
 
     <div class="logo-page-accueil">
-        <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge">
+        <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge" class="logo-accueil">
     </div>
     <div>
 
@@ -18,9 +18,11 @@
         {{ form_end(form) }}
 
 
-        <button>Lancer une recherche avec filtre</button>
+        <button type="button" data-controller="add-class"
+                data-action="click->add-class#toggleClass">Lancer une recherche avec filtre
+        </button>
     </div>
-<div id="result"></div>
+    <div id="result"></div>
 
-
+   
 {% endblock %}

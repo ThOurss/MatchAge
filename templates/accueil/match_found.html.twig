@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    {% if match  %}
+    {% if match %}
 
         <h2>Utilisateur trouvé :</h2>
 
-        <p>Nom1 :{{ match.user1.firstname}} </p>
+        <p>Nom1 :{{ match.user1.firstname }} </p>
         <p>Nom2 : {{ match.user2.firstname }}</p>
 
     {% elseif message is defined %}
         <p>{{ message }}</p>
     {% endif %}
+    <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p>
 {% endblock %}

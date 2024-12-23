@@ -29,7 +29,9 @@ class AccueilController extends AbstractController
         $matches = [];
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->getUser(); // Utilisateur connecté
-
+            if (!$user) {
+                return $this->redirectToRoute('app_login');
+            }
             if (!$user->isSearching()) {
                 $user->setSearching(true);
                 $user->setSearchComplete(false);
@@ -48,17 +50,17 @@ class AccueilController extends AbstractController
     }
 
     #[route('/search', name: 'search_progress')]
-    public function search(EntityManagerInterface $entityManager): Response
+    public function search(EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
     {
         $user = $this->getUser(); // Utilisateur connecté
 
         if (!$user->isSearching()) {
-    if($user->isSearchComplete()){
+            if ($user->isSearchComplete()) {
 
-        return $this->render('accueil/match_found.html.twig', [
-            'match' => $entityManager->getRepository(MatchUser::class)->findOneBy(['user1' => $user->getId()]),
-        ]);
-    }
+                return $this->render('accueil/match_found.html.twig', [
+                    'match' => $entityManager->getRepository(MatchUser::class)->findOneBy(['user2' => $user->getId()]),
+                ]);
+            }
             return $this->redirectToRoute('app_accueil');
         }
 
@@ -72,6 +74,9 @@ class AccueilController extends AbstractController
         if (!empty($potentialMatches)) {
 
             try {
+                if ($matchUserRepository->isMatched($user, $potentialMatches[0])) {
+                    return $this->redirectToRoute('search_progress'); // Match déjà existant
+                }
                 $match = new MatchUser();
                 $match->setUser1($user);
                 $match->setUser2($potentialMatches[0]);
@@ -92,7 +97,6 @@ class AccueilController extends AbstractController
             // Associer avec le premier utilisateur trouvé
 
 
-
             return $this->render('accueil/match_found.html.twig', [
                 'match' => $match,
             ]);
@@ -101,6 +105,7 @@ class AccueilController extends AbstractController
         // Si aucun match trouvé, continuer la recherche
         return $this->render('accueil/search_progress.html.twig');
     }
+
     #[route('/cancel_search', name: 'search_cancel')]
     public function cancelSearch(EntityManagerInterface $entityManager): Response
     {
