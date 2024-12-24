@@ -5,24 +5,28 @@
 {% block body %}
 
 
+    <main data-controller="add-class">
+        <h1>MatchAge </h1>
 
-    <h1>MatchAge </h1>
+        <div class=" logo-page-accueil ">
+            <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge" class="logo-accueil" id="test-img"
+                 data-add-class-target="target">
 
-    <div class="logo-page-accueil">
-        <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge" class="logo-accueil">
-    </div>
-    <div>
+        </div>
+        <div>
 
-        {{ form_start(form) }}
+            {{ form_start(form) }}
 
-        {{ form_end(form) }}
+            {{ form_end(form) }}
+            <button type="button"
+                    data-action="click->add-class#toggleClass" data-target-id="test-img">Lancer une recherche avec
+                filtre
+            </button>
+
+        </div>
+        <div id="result"></div>
+    </main>
 
 
-        <button type="button" data-controller="add-class"
-                data-action="click->add-class#toggleClass">Lancer une recherche avec filtre
-        </button>
-    </div>
-    <div id="result"></div>
 
-   
 {% endblock %}

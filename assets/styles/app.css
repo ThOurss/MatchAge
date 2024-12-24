@@ -4,6 +4,12 @@ body {
 
 .img-logo {
     width: 3rem;
+
+}
+
+.search-actif {
+    animation: infinite ease 2s rotateimg;
+
 }
 
 body form {
@@ -24,4 +30,14 @@ body .logo-page-accueil img {
 
 .test {
     color: yellow;
+}
+
+@keyframes rotateimg {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }

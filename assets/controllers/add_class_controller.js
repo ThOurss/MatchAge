@@ -7,21 +7,26 @@ import {Controller} from '@hotwired/stimulus';
 /* stimulusFetch: 'lazy' */
 
 export default class extends Controller {
-    static targets = [];
+    static targets = ['target'];
 
     connect() {
         console.log('Controller connecté');
     }
 
     addClass(event) {
-        // Récupérer l'élément actuel qui a déclenché l'événement
-        const element = event.currentTarget;
+        event.preventDefault();
 
-        // Ajouter la classe à l'élément
-        element.classList.add("test");
+        // Retirer la classe de tous les éléments (si nécessaire)
+        this.targetTargets.forEach(element => {
+            element.classList.remove('active'); // Remplacez 'active' par la classe que vous voulez gérer
+        });
 
-        // Optionnel : Afficher un message dans la console pour vérifier que l'événement est bien traité
-        console.log("Classe ajoutée : ", element.className);
+        // Ajouter la classe au bon élément
+        const targetId = event.currentTarget.dataset.targetId; // Récupère l'ID de l'élément cible
+        const targetElement = this.targetTargets.find(el => el.id === targetId);
+        if (targetElement) {
+            targetElement.classList.add('active'); // Remplacez 'active' par la classe souhaitée
+        }
     }
 
     removeClass(event) {
@@ -35,8 +40,16 @@ export default class extends Controller {
     }
 
     toggleClass(event) {
-        const element = event.currentTarget;
-        element.classList.toggle("active");
-        console.log('Événement click appelé');
+        event.preventDefault();
+
+        // Retirer la classe de tous les éléments (si nécessaire)
+
+
+        // Ajouter la classe au bon élément
+        const targetId = event.currentTarget.dataset.targetId; // Récupère l'ID de l'élément cible
+        const targetElement = this.targetTargets.find(el => el.id === targetId);
+
+        targetElement.classList.toggle('search-actif'); // Remplacez 'active' par la classe souhaitée
+
     }
 }
