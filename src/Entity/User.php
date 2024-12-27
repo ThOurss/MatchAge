@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -37,50 +38,55 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     )]
     private ?\DateTimeInterface $dateOfBirth = null;
 
+    #[ORM\Column(type: 'integer')]
+    private ?int $age;
+
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 250, unique:true)]
+    #[ORM\Column(length: 250, unique: true)]
     #[Assert\NotBlank(
         message: 'Veuillez renseigner votre adresse email'
     )]
     #[Assert\Email(
-         message:"L'adresse email '{{ value }}' n'est pas valide."
-     )]
+        message: "L'adresse email '{{ value }}' n'est pas valide."
+    )]
     private ?string $email = null;
 
 
     #[ORM\Column(length: 250)]
     #[Assert\Length(
-     min: 8,
-     max: 4096,
-     minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.",
-     maxMessage: "Le mot de passe est trop long."
+        min: 8,
+        max: 4096,
+        minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le mot de passe est trop long."
     )]
     #[Assert\Regex(
-         pattern:"/[A-Z]/",
-         message:"Le mot de passe doit contenir au moins une lettre majuscule."
-     )]
-     #[Assert\Regex(
-         pattern:"/[a-z]/",
-         message:"Le mot de passe doit contenir au moins une lettre minuscule."
-     )]
-     #[Assert\Regex(
-         pattern:"/\d/",
-         message:"Le mot de passe doit contenir au moins un chiffre."
-     )]
-     #[Assert\Regex(
-         pattern:"/[\W]/",
-         message:"Le mot de passe doit contenir au moins un caractère spécial (par exemple, @, #, $, etc.)."
-     )]
+        pattern: "/[A-Z]/",
+        message: "Le mot de passe doit contenir au moins une lettre majuscule."
+    )]
+    #[Assert\Regex(
+        pattern: "/[a-z]/",
+        message: "Le mot de passe doit contenir au moins une lettre minuscule."
+    )]
+    #[Assert\Regex(
+        pattern: "/\d/",
+        message: "Le mot de passe doit contenir au moins un chiffre."
+    )]
+    #[Assert\Regex(
+        pattern: "/[\W]/",
+        message: "Le mot de passe doit contenir au moins un caractère spécial (par exemple, @, #, $, etc.)."
+    )]
     private ?string $password = null;
+
+
     #[ORM\OneToMany(targetEntity: MatchUser::class, mappedBy: 'user')]
     private Collection $matchUsers;
 
     #[ORM\Column(type: 'boolean')]
     private $isSearching = false;
-#[ORM\Column(type: 'boolean')]
-private $searchComplete =true;
+    #[ORM\Column(type: 'boolean')]
+    private $searchComplete = true;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
     #[ORM\JoinColumn(nullable: false)]
@@ -96,7 +102,6 @@ private $searchComplete =true;
 
     #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'user')]
     private Collection $conversation;
-
 
 
     public function __construct()
@@ -183,6 +188,7 @@ private $searchComplete =true;
 
         return $this;
     }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -192,9 +198,6 @@ private $searchComplete =true;
     {
         $this->user = $user;
     }
-
-
-
 
 
     public function getPays(): ?Pays
@@ -279,8 +282,6 @@ private $searchComplete =true;
     }
 
 
-
-
     public function getRoles(): array
     {
         return [$this->role?->getRoleName() ?? 'ROLE_USER'];
@@ -295,7 +296,7 @@ private $searchComplete =true;
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     public function getRole(): ?Role
@@ -364,11 +365,16 @@ private $searchComplete =true;
         return $this;
     }
 
+    public function getAge(): ?int
+    {
+        return $this->age;
+    }
 
-
-
-
-
+    public function setAge(?int $age): self
+    {
+        $this->age = $age;
+        return $this;
+    }
 
 
 }

@@ -29,7 +29,7 @@ final class UserController extends AbstractController
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-    $role = $entityManager->getRepository(Role::class)->findOneBy(['roleName' => 'Utilisateur']);
+        $role = $entityManager->getRepository(Role::class)->findOneBy(['roleName' => 'Utilisateur']);
 
 
         $user = new User();
@@ -39,12 +39,13 @@ final class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setRole($role);
+
             $plainPassword = $form->get('password')->getData();
 
             // Hachez le mot de passe
             $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
-
+            
             $entityManager->persist($user);
 
             $entityManager->flush();
@@ -59,16 +60,16 @@ final class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user,EntityManagerInterface $entityManager,Security $security): Response
+    public function show(User $user, EntityManagerInterface $entityManager, Security $security): Response
     {
         $userRole = $security->getUser();
-    if (!$userRole){
-        return $this->redirectToRoute('app_user_new', [], Response::HTTP_SEE_OTHER);
-    }
+        if (!$userRole) {
+            return $this->redirectToRoute('app_user_new', [], Response::HTTP_SEE_OTHER);
+        }
 
         return $this->render('user/show.html.twig', [
             'user' => $user,
-            'userRole'=>$userRole,
+            'userRole' => $userRole,
 
         ]);
     }
@@ -96,14 +97,13 @@ final class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
-
 
 
 }

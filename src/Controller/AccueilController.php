@@ -66,8 +66,10 @@ class AccueilController extends AbstractController
 
         // Récupérer les utilisateurs en recherche
         $query = $entityManager->createQuery(
-            'SELECT u FROM App\Entity\User u WHERE u.isSearching = true AND u.id != :userId'
-        )->setParameter('userId', $user->getId());
+            'SELECT u FROM App\Entity\User u WHERE u.isSearching = true AND u.id != :userId AND u.age BETWEEN :minAge AND :maxAge'
+        )->setParameter('userId', $user->getId()
+        )->setParameter('minAge', $user->getAge() - 5
+        )->setParameter('maxAge', $user->getAge() + 5);
 
         $potentialMatches = $query->getResult();
 
