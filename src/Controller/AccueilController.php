@@ -56,17 +56,29 @@ class AccueilController extends AbstractController
 
         if (!$user->isSearching()) {
             if ($user->isSearchComplete()) {
+                $match = $matchUserRepository->findLastMatchForUser($user->getId());
+                $matchName = $matchUserRepository->findOtherUserInMatch($match->getId(), $user->getId());
 
                 return $this->render('accueil/match_found.html.twig', [
-                    'match' => $entityManager->getRepository(MatchUser::class)->findOneBy(['user2' => $user->getId()]),
+                    'match' => $match,
+                    'matchName' => $matchName,
                 ]);
             }
             return $this->redirectToRoute('app_accueil');
         }
 
+
         // Récupérer les utilisateurs en recherche
         $query = $entityManager->createQuery(
-            'SELECT u FROM App\Entity\User u WHERE u.isSearching = true AND u.id != :userId AND u.age BETWEEN :minAge AND :maxAge'
+            'SELECT u FROM App\Entity\User u 
+            LEFT JOIN App\Entity\MatchUser m1 WITH m1.user1 = u AND m1.user2 = :userId
+            LEFT JOIN App\Entity\MatchUser m2 WITH m2.user1 = :userId AND m2.user2 = u
+            WHERE u.isSearching = true 
+            AND u.id != :userId 
+            AND u.age BETWEEN :minAge AND :maxAge
+            AND u.age >=18
+            AND m1.id IS NULL
+            AND m2.id IS NULL'
         )->setParameter('userId', $user->getId()
         )->setParameter('minAge', $user->getAge() - 5
         )->setParameter('maxAge', $user->getAge() + 5);
@@ -76,9 +88,7 @@ class AccueilController extends AbstractController
         if (!empty($potentialMatches)) {
 
             try {
-                if ($matchUserRepository->isMatched($user, $potentialMatches[0])) {
-                    return $this->redirectToRoute('search_progress'); // Match déjà existant
-                }
+
                 $match = new MatchUser();
                 $match->setUser1($user);
                 $match->setUser2($potentialMatches[0]);
@@ -87,6 +97,8 @@ class AccueilController extends AbstractController
                 $potentialMatches[0]->setSearching(false); // Arrêter la recherche pour l'autre utilisateur
                 $user->setSearchComplete(true);
                 $potentialMatches[0]->setSearchComplete(true);
+
+
                 $entityManager->persist($match);
 
                 $entityManager->flush();
@@ -101,6 +113,7 @@ class AccueilController extends AbstractController
 
             return $this->render('accueil/match_found.html.twig', [
                 'match' => $match,
+                'matchName' => $potentialMatches[0],
             ]);
         }
 

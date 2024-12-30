@@ -2,10 +2,10 @@
 {% block body %}
     {% if match %}
 
-        <h2>Utilisateur trouvé :</h2>
-
-        <p>Nom1 :{{ match.user1.firstname }} </p>
-        <p>Nom2 : {{ match.user2.firstname }}</p>
+        <h2>Information sur l'utilisateur trouvé :</h2>
+        <p>Prénom : {{ matchName.firstname|capitalize }}</p>
+        <p>Age : {{ matchName.age }}</p>
+        <p>Civilite : {{ matchName.civilite.civiliteName }}</p>
 
     {% elseif message is defined %}
         <p>{{ message }}</p>

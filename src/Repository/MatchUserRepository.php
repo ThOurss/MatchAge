@@ -32,6 +32,45 @@ class MatchUserRepository extends ServiceEntityRepository
         return (bool)$qb->getQuery()->getOneOrNullResult();
     }
 
+    public function findLastMatchForUser(int $userId): ?MatchUser
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.user1 = :userId OR m.user2 = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('m.matchedAt', 'DESC')  // Correcte : Trier par la colonne 'matchedAt'
+            ->setMaxResults(1)  // Limiter à un seul résultat
+            ->getQuery()
+            ->getOneOrNullResult();  // Récupérer le dernier match ou null si aucun match trouvé
+    }
+
+    public function findOtherUserInMatch(int $matchId, int $userId): ?User
+    {
+
+        // Rechercher le match spécifique par son ID
+        $match = $this->createQueryBuilder('m')
+            ->andWhere('m.id = :matchId')
+            ->setParameter('matchId', $matchId)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!$match) {
+            return null;  // Aucun match trouvé
+        }
+
+        // Vérifier si l'utilisateur actuel est user1 ou user2 et retourner l'autre
+        if ($match->getUser1()->getId() === $userId) {
+
+            return $match->getUser2();  // Si l'utilisateur actuel est user1, retourner user2
+        } elseif ($match->getUser2()->getId() === $userId) {
+            
+            return $match->getUser1();  // Si l'utilisateur actuel est user2, retourner user1
+        }
+
+        return null;  // Si l'utilisateur actuel n'est dans aucun des deux slots
+    }
+
+
+
     //    /**
     //     * @return MatchUser[] Returns an array of MatchUser objects
     //     */
