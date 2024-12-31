@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    {% if match %}
 
-        <h2>Information sur l'utilisateur trouvé :</h2>
-        <p>Prénom : {{ matchName.firstname|capitalize }}</p>
-        <p>Age : {{ matchName.age }}</p>
-        <p>Civilite : {{ matchName.civilite.civiliteName }}</p>
 
-    {% elseif message is defined %}
-        <p>{{ message }}</p>
-    {% endif %}
+    <h2>Information sur l'utilisateur trouvé :</h2>
+    <p>Prénom : {{ matchName.firstname|capitalize }}</p>
+    <p>Age : {{ matchName.age }}</p>
+    <p>Civilite : {{ matchName.civilite.civiliteName }}</p>
+
+    {{ form_start(form) }}
+
+    {{ form_end(form) }}
+
+
     <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p>
 {% endblock %}

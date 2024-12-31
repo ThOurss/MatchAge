@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 
 #[ORM\Entity(repositoryClass: MatchUserRepository::class)]
-
 class MatchUser
 {
     #[ORM\Id]
@@ -20,19 +19,24 @@ class MatchUser
     {
         return $this->id;
     }
+
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user1 = null;
+
+    #[ORM\ManyToOne(inversedBy: 'matchuser')]
+    private ?MatchAccept $matchAccepted1 = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user2 = null;
 
+    #[ORM\ManyToOne(inversedBy: 'matchuser')]
+    private ?MatchAccept $matchAccepted2 = null;
+
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
     private ?int $version = null;
-
-
 
 
     #[ORM\Column(type: 'datetime')]
@@ -92,7 +96,29 @@ class MatchUser
         return $this;
     }
 
+    public function getMatchAccepted1(): ?MatchAccept
+    {
+        return $this->matchAccepted1;
+    }
 
+    public function setMatchAccepted1(?MatchAccept $matchAccepted1): static
+    {
+        $this->matchAccepted1 = $matchAccepted1;
+
+        return $this;
+    }
+
+    public function getMatchAccepted2(): ?MatchAccept
+    {
+        return $this->matchAccepted2;
+    }
+
+    public function setMatchAccepted2(?MatchAccept $matchAccepted2): static
+    {
+        $this->matchAccepted2 = $matchAccepted2;
+
+        return $this;
+    }
 
 
 }

@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\MatchAccept;
 use App\Entity\MatchUser;
 use App\Entity\User;
 use App\Entity\UserMatch;
+use App\Form\MatchType;
 use App\Form\SearchType;
 use App\Repository\MatchUserRepository;
 use App\Repository\UserMatchRepository;
@@ -50,7 +52,7 @@ class AccueilController extends AbstractController
     }
 
     #[route('/search', name: 'search_progress')]
-    public function search(EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
+    public function search(Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
     {
         $user = $this->getUser(); // Utilisateur connecté
 
@@ -58,8 +60,9 @@ class AccueilController extends AbstractController
             if ($user->isSearchComplete()) {
                 $match = $matchUserRepository->findLastMatchForUser($user->getId());
                 $matchName = $matchUserRepository->findOtherUserInMatch($match->getId(), $user->getId());
-
+                return $this->redirectToRoute('match_found', ['id' => $matchName->getId()]);
                 return $this->render('accueil/match_found.html.twig', [
+
                     'match' => $match,
                     'matchName' => $matchName,
                 ]);
@@ -88,10 +91,13 @@ class AccueilController extends AbstractController
         if (!empty($potentialMatches)) {
 
             try {
-
+                $user1Accept = $entityManager->getRepository(MatchAccept::class)->findOneBy(['id' => 1]);
+                $user2Accept = $entityManager->getRepository(MatchAccept::class)->findOneBy(['id' => 1]);
                 $match = new MatchUser();
                 $match->setUser1($user);
+                $match->setMatchAccepted1($user1Accept);
                 $match->setUser2($potentialMatches[0]);
+                $match->setMatchAccepted2($user2Accept);
 
                 $user->setSearching(false); // Arrêter la recherche pour l'utilisateur
                 $potentialMatches[0]->setSearching(false); // Arrêter la recherche pour l'autre utilisateur
@@ -110,8 +116,9 @@ class AccueilController extends AbstractController
             }
             // Associer avec le premier utilisateur trouvé
 
-
+            return $this->redirectToRoute('match_found', ['id' => $potentialMatches[0]->getId()]);
             return $this->render('accueil/match_found.html.twig', [
+
                 'match' => $match,
                 'matchName' => $potentialMatches[0],
             ]);
@@ -134,4 +141,48 @@ class AccueilController extends AbstractController
         return $this->redirectToRoute('app_accueil');
     }
 
+    #[route('/match_find/{id}', name: 'match_found')]
+    public function matchFound(User $id, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
+    {
+        $userMatch = $entityManager->getRepository(User::class)->findOneBy(['id' => $id]);
+        $form = $this->createForm(MatchType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $user = $this->getUser();
+            $match = $matchUserRepository->findLastMatchForUser($user->getId());
+            if ($form->get('RefuserMatch')->isClicked()) {
+                $userRefuse = $entityManager->getRepository(MatchAccept::class)->findOneBy(['id' => 3]);
+
+                if ($match->getUser1()->getId() == $user->getId()) {
+                    $match->setMatchAccepted1($userRefuse);
+                } else {
+                    $match->setMatchAccepted2($userRefuse);
+                }
+                $entityManager->persist($match);
+
+                $entityManager->flush();
+                return $this->redirectToRoute('app_accueil');
+            } else {
+                $userAccepte = $entityManager->getRepository(MatchAccept::class)->findOneBy(['id' => 2]);
+
+                if ($match->getUser1()->getId() == $user->getId()) {
+                    $match->setMatchAccepted1($userAccepte);
+                } else {
+                    $match->setMatchAccepted2($userAccepte);
+                }
+                $entityManager->persist($match);
+
+                $entityManager->flush();
+                return $this->redirectToRoute('app_accueil');
+            }
+
+
+        }
+        return $this->render('accueil/match_found.html.twig', [
+            'form' => $form->createView(),
+            'matchName' => $userMatch,
+        ]);
+    }
 }
