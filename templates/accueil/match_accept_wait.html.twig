@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+
+    <h2>Information sur l'utilisateur trouvé :</h2>
+    <p>Prénom : {{ matchName.firstname|capitalize }}</p>
+    <p>Age : {{ matchName.age }}</p>
+    <p>Civilite : {{ matchName.civilite.civiliteName }}
+
+    {% if statut.id == 2 %}
+        <p>Statut: L'utilisateur a accepté le match </p>
+    {% elseif statut.id == 3 %}
+        <p>Statut: L'utilisateur a refusé le match </p>
+    {% else %}
+        <p>Statut: L'utilisateur n'a pas pris sa décision </p>
+    {% endif %}
+
+
+    {% if statut.id == 3 %}
+        <form action="{{ path('delete_matchUser', { id: matchUser.id }) }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ matchUser.id) }}">
+            <button type="submit" class="btn btn-danger">Supprimer le match et retourner à l'accueil</button>
+        </form>
+
+    {% else %}
+        <p> <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p> </p>
+    {% endif %}
+
+{% endblock %}

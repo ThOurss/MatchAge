@@ -20,14 +20,14 @@ class MatchUser
         return $this->id;
     }
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'matchUsers')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user1 = null;
 
     #[ORM\ManyToOne(inversedBy: 'matchuser')]
     private ?MatchAccept $matchAccepted1 = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'matchUsers')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user2 = null;
 
@@ -72,29 +72,6 @@ class MatchUser
         return $this;
     }
 
-    public function getUser1(): ?User
-    {
-        return $this->user1;
-    }
-
-    public function setUser1(?User $user1): static
-    {
-        $this->user1 = $user1;
-
-        return $this;
-    }
-
-    public function getUser2(): ?User
-    {
-        return $this->user2;
-    }
-
-    public function setUser2(?User $user2): static
-    {
-        $this->user2 = $user2;
-
-        return $this;
-    }
 
     public function getMatchAccepted1(): ?MatchAccept
     {
@@ -116,6 +93,30 @@ class MatchUser
     public function setMatchAccepted2(?MatchAccept $matchAccepted2): static
     {
         $this->matchAccepted2 = $matchAccepted2;
+
+        return $this;
+    }
+
+    public function getUser1(): ?User
+    {
+        return $this->user1;
+    }
+
+    public function setUser1(?User $user1): static
+    {
+        $this->user1 = $user1;
+
+        return $this;
+    }
+
+    public function getUser2(): ?User
+    {
+        return $this->user2;
+    }
+
+    public function setUser2(?User $user2): static
+    {
+        $this->user2 = $user2;
 
         return $this;
     }

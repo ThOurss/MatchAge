@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Conversation;
 use App\Entity\MatchAccept;
 use App\Entity\MatchUser;
 use App\Entity\User;
 use App\Entity\UserMatch;
+use App\Form\deleteMatchType;
 use App\Form\MatchType;
 use App\Form\SearchType;
 use App\Repository\MatchUserRepository;
@@ -14,10 +16,13 @@ use App\Repository\UserRepository;
 use App\Service\MatchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
+use Doctrine\Tests\ORM\Functional\Ticket\MyEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class AccueilController extends AbstractController
 {
@@ -47,6 +52,7 @@ class AccueilController extends AbstractController
 
         return $this->render('accueil/index.html.twig', [
             'form' => $form->createView(),
+            'message' => '',
             'match' => $matches,
         ]);
     }
@@ -61,11 +67,7 @@ class AccueilController extends AbstractController
                 $match = $matchUserRepository->findLastMatchForUser($user->getId());
                 $matchName = $matchUserRepository->findOtherUserInMatch($match->getId(), $user->getId());
                 return $this->redirectToRoute('match_found', ['id' => $matchName->getId()]);
-                return $this->render('accueil/match_found.html.twig', [
 
-                    'match' => $match,
-                    'matchName' => $matchName,
-                ]);
             }
             return $this->redirectToRoute('app_accueil');
         }
@@ -117,11 +119,7 @@ class AccueilController extends AbstractController
             // Associer avec le premier utilisateur trouvé
 
             return $this->redirectToRoute('match_found', ['id' => $potentialMatches[0]->getId()]);
-            return $this->render('accueil/match_found.html.twig', [
-
-                'match' => $match,
-                'matchName' => $potentialMatches[0],
-            ]);
+            
         }
 
         // Si aucun match trouvé, continuer la recherche
@@ -151,7 +149,9 @@ class AccueilController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $this->getUser();
-            $match = $matchUserRepository->findLastMatchForUser($user->getId());
+            $match = $matchUserRepository->findMatchWithIdUser($user->getId(), $userMatch->getId());
+
+
             if ($form->get('RefuserMatch')->isClicked()) {
                 $userRefuse = $entityManager->getRepository(MatchAccept::class)->findOneBy(['id' => 3]);
 
@@ -160,22 +160,55 @@ class AccueilController extends AbstractController
                 } else {
                     $match->setMatchAccepted2($userRefuse);
                 }
+
                 $entityManager->persist($match);
 
                 $entityManager->flush();
-                return $this->redirectToRoute('app_accueil');
+
+                if ($match->getVersion() != 3) {
+                    return $this->redirectToRoute('app_accueil');
+                } else {
+
+                    unset($match);
+                    return $this->redirectToRoute('app_accueil');
+                }
+
+
             } else {
                 $userAccepte = $entityManager->getRepository(MatchAccept::class)->findOneBy(['id' => 2]);
 
                 if ($match->getUser1()->getId() == $user->getId()) {
                     $match->setMatchAccepted1($userAccepte);
+                    $statut = $match->setMatchAccepted1($userAccepte);
+
                 } else {
                     $match->setMatchAccepted2($userAccepte);
+                    $statut = $match->setMatchAccepted2($userAccepte);
+
                 }
+
                 $entityManager->persist($match);
 
                 $entityManager->flush();
-                return $this->redirectToRoute('app_accueil');
+                if ($match->getVersion() != 3) {
+                    return $this->redirectToRoute('match_accept', ['id' => $userMatch->getId()]);
+
+                } else {
+                    if ($match->getMatchAccepted1()->getId() == 3 or $match->getMatchAccepted2()->getId() == 3) {
+                        $entityManager->remove($match);
+                        $entityManager->flush();
+                        unset($match);
+                        return $this->redirectToRoute('match_accept', ['id' => $userMatch->getId()]);
+
+                    } elseif ($match->getMatchAccepted1()->getId() == 2 and $match->getMatchAccepted2()->getId() == 2) {
+
+                        return $this->redirectToRoute('match_accept', ['id' => $userMatch->getId()]);
+
+                    }
+
+
+                }
+
             }
 
 
@@ -183,6 +216,47 @@ class AccueilController extends AbstractController
         return $this->render('accueil/match_found.html.twig', [
             'form' => $form->createView(),
             'matchName' => $userMatch,
+
         ]);
     }
+
+    #[Route('/match_accept/{id}', name: 'match_accept')]
+    public function matchAcceptWait(User $id, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, CsrfTokenManagerInterface $csrfTokenManager): Response
+    {
+
+        $user = $this->getUser();
+        $match = $matchUserRepository->findLastMatchForUser($user->getId());
+        $userMatch = $entityManager->getRepository(User::class)->findOneBy(['id' => $id]);
+        $csrfToken = $csrfTokenManager->getToken('delete_matchUser')->getValue();
+        if ($match->getUser1()->getId() == $user->getId()) {
+            $statut = $match->getMatchAccepted2();
+        } else {
+            $statut = $match->getMatchAccepted1();
+        }
+        return $this->render('accueil/match_accept_wait.html.twig', [
+            'csrf_token' => $csrfToken,
+            'matchName' => $userMatch,
+            'statut' => $statut,
+            'matchUser' => $match,
+        ]);
+    }
+
+    #[Route('/match_delete/{id}', name: 'delete_matchUser', methods: ['POST'])]
+    public function deleteMatch(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager, MatchUserRepository $matchUserRepository): Response
+    {
+        $user = $this->getUser();
+        $submittedToken = $request->request->get('_token');
+        $match = $matchUserRepository->findLastMatchForUser($user->getId());
+        // Vérification du jeton CSRF
+        if ($csrfTokenManager->isTokenValid(new CsrfToken('delete' . $match->getId(), $submittedToken))) {
+            $entityManager->remove($match);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_accueil');
+        }
+        throw $this->createAccessDeniedException('Action non autorisée.');
+
+
+    }
+
 }

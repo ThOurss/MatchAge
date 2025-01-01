@@ -6,6 +6,7 @@ use App\Entity\MatchUser;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\expr;
 
 /**
  * @extends ServiceEntityRepository<MatchUser>
@@ -62,13 +63,39 @@ class MatchUserRepository extends ServiceEntityRepository
 
             return $match->getUser2();  // Si l'utilisateur actuel est user1, retourner user2
         } elseif ($match->getUser2()->getId() === $userId) {
-            
+
             return $match->getUser1();  // Si l'utilisateur actuel est user2, retourner user1
         }
 
         return null;  // Si l'utilisateur actuel n'est dans aucun des deux slots
     }
 
+    public function findMatchWithIdUser(int $user1, int $user2): ?MatchUser
+    {
+        $qb = $this->createQueryBuilder('m');
+
+        // Ajout des conditions pour rechercher un match entre les utilisateurs
+        $qb->andWhere(
+            $qb->expr()->orX(
+            // Condition 1: Si user1 et user2 sont dans cet ordre
+                $qb->expr()->andX(
+                    $qb->expr()->eq('m.user1', ':user1'),
+                    $qb->expr()->eq('m.user2', ':user2')
+                ),
+                // Condition 2: Si user2 et user1 sont dans cet ordre
+                $qb->expr()->andX(
+                    $qb->expr()->eq('m.user1', ':user2'),
+                    $qb->expr()->eq('m.user2', ':user1')
+                )
+            )
+        )
+            // Ajout des paramètres user1 et user2 à la requête
+            ->setParameter('user1', $user1)
+            ->setParameter('user2', $user2);
+
+        // Exécution de la requête et retour du résultat
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 
 
     //    /**

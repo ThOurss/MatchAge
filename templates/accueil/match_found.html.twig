@@ -5,11 +5,13 @@
     <h2>Information sur l'utilisateur trouvé :</h2>
     <p>Prénom : {{ matchName.firstname|capitalize }}</p>
     <p>Age : {{ matchName.age }}</p>
-    <p>Civilite : {{ matchName.civilite.civiliteName }}</p>
+    <p>Civilite : {{ matchName.civilite.civiliteName }}
 
-    {{ form_start(form) }}
 
-    {{ form_end(form) }}
+
+        {{ form_start(form) }}
+
+        {{ form_end(form) }}
 
 
     <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p>
