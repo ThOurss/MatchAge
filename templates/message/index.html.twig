@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Message{% endblock %}
+
+{% block body %}
+
+    <section class="">
+        {% for conversation in conversations %}
+            <section>
+                <div>
+                    <img src="" alt="">
+
+                </div>
+                <div>
+                    {% for user in conversation.otherUsers %}
+                        <p>{{ user.firstName }}</p>
+                    {% endfor %}
+                </div>
+                <div>
+                    <p></p>
+                </div>
+            </section>
+        {% endfor %}
+    </section>
+
+
+{% endblock %}

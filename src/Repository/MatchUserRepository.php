@@ -97,6 +97,15 @@ class MatchUserRepository extends ServiceEntityRepository
         return $qb->getQuery()->getOneOrNullResult();
     }
 
+    public function findOneById(int $matchuser): ?MatchUser
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->andWhere('m.id = :matchuser');
+        $qb->setParameter('matchuser', $matchuser);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
 
     //    /**
     //     * @return MatchUser[] Returns an array of MatchUser objects

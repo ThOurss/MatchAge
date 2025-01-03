@@ -14,9 +14,19 @@
 </head>
 <body>
 <header>
+
     <ul>
         <li><a href="{{ path('app_login') }}">Inscription/connexion</a></li>
     </ul>
+    <h1>MatchAge </h1>
+    {% set currentRoute = app.request.attributes.get('_route') %}
+    {% if currentRoute != 'search_progress' %}
+        <div class=" logo-page-accueil ">
+            <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge" class="logo-accueil" id="test-img"
+                 data-add-class-target="target">
+
+        </div>
+    {% endif %}
 </header>
 
 

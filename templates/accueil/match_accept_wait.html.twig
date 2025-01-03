@@ -21,9 +21,11 @@
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ matchUser.id) }}">
             <button type="submit" class="btn btn-danger">Supprimer le match et retourner à l'accueil</button>
         </form>
-
+    {% elseif statut.id == 2 %}
+        <p><a href="{{ path('app_message') }}">Envoyer un message</a></p>
+        <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p>
     {% else %}
-        <p> <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p> </p>
+        <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p>
     {% endif %}
 
 {% endblock %}
