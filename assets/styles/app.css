@@ -28,9 +28,22 @@ body .logo-page-accueil img {
     width: 100%;
 }
 
-.test {
-    color: yellow;
+body main .form-message {
+    display: flex;
 }
+
+body main div .current-user {
+    color: red;
+}
+
+body main div .other-user {
+    color: blue;
+}
+
+body main .btn-send-message svg {
+    width: 20px;
+}
+
 
 @keyframes rotateimg {
     from {

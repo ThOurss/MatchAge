@@ -13,7 +13,9 @@
                 </div>
                 <div>
                     {% for user in conversation.otherUsers %}
-                        <p>{{ user.firstName }}</p>
+                        <p>
+                            <a href="{{ path('app_message_show',{'id':conversation.conversation.id}) }}">{{ user.firstName }}</a>
+                        </p>
                     {% endfor %}
                 </div>
                 <div>

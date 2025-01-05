@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}Message avec {{ otherUser.firstName }}{% endblock %}
+{% block body %}
+    <main>
+
+        <div>
+            <img>
+        </div>
+        <div>
+            <p>
+                {{ otherUser.firstName|capitalize }} {{ otherUser.name }}
+            </p>
+        </div>
+        <div>
+            {% for message in messages %}
+                <p class="{% if message.user == currentUser %}current-user{% else %}other-user{% endif %}">{{ message.contenue }}</p>
+            {% endfor %}
+        </div>
+        {{ include('Message/_form.html.twig') }}
+    </main>
+{% endblock %}

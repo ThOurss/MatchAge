@@ -103,12 +103,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'user')]
     private Collection $conversation;
 
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'user')]
+    private Collection $message;
 
     public function __construct()
     {
         $this->signalements = new ArrayCollection();
         $this->conversation = new ArrayCollection();
         $this->matchUsers = new ArrayCollection();
+        $this->message = new ArrayCollection();
     }
 
 
@@ -373,6 +376,36 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setAge(?int $age): self
     {
         $this->age = $age;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessage(): Collection
+    {
+        return $this->message;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->message->contains($message)) {
+            $this->message->add($message);
+            $message->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->message->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getUser() === $this) {
+                $message->setUser(null);
+            }
+        }
+
         return $this;
     }
 

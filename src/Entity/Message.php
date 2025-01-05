@@ -19,8 +19,8 @@ class Message
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $contenue = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateEnvoie = null;
+    #[ORM\Column(type: 'datetime')]
+    private $dateEnvoie;
 
     #[ORM\ManyToOne(inversedBy: 'message')]
     private ?MessageStatut $statutMessage = null;
@@ -28,7 +28,12 @@ class Message
     #[ORM\ManyToMany(targetEntity: Conversation::class, inversedBy: 'message')]
     private Collection $conversation;
 
-    public function __construct(){
+    #[ORM\ManyToOne(inversedBy: 'message')]
+    private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->dateEnvoie = new \DateTime();
         $this->conversation = new ArrayCollection();
     }
 
@@ -49,17 +54,6 @@ class Message
         return $this;
     }
 
-    public function getDateEnvoie(): ?\DateTimeInterface
-    {
-        return $this->dateEnvoie;
-    }
-
-    public function setDateEnvoie(\DateTimeInterface $dateEnvoie): static
-    {
-        $this->dateEnvoie = $dateEnvoie;
-
-        return $this;
-    }
 
     public function getStatutMessage(): ?MessageStatut
     {
@@ -93,6 +87,30 @@ class Message
     public function removeConversation(Conversation $conversation): static
     {
         $this->conversation->removeElement($conversation);
+
+        return $this;
+    }
+
+    public function getDateEnvoie(): ?\DateTimeInterface
+    {
+        return $this->dateEnvoie;
+    }
+
+    public function setDateEnvoie(\DateTimeInterface $dateEnvoie): static
+    {
+        $this->dateEnvoie = $dateEnvoie;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
