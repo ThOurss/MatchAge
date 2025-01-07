@@ -2,20 +2,85 @@
 {% block title %}Message avec {{ otherUser.firstName }}{% endblock %}
 {% block body %}
     <main>
+        <section class="">
+            {% for conversation in conversation %}
+                <section>
+                    <div>
+                        <img src="" alt="">
 
-        <div>
-            <img>
-        </div>
-        <div>
-            <p>
-                {{ otherUser.firstName|capitalize }} {{ otherUser.name }}
-            </p>
-        </div>
-        <div>
-            {% for message in messages %}
-                <p class="{% if message.user == currentUser %}current-user{% else %}other-user{% endif %}">{{ message.contenue }}</p>
+                    </div>
+                    <div>
+                        {% for user in conversation.otherUsers %}
+                            <p>
+                                <a href="{{ path('app_message_show',{'id':conversation.conversation.id}) }}">{{ user.firstName }}</a>
+                            </p>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <p></p>
+                    </div>
+                </section>
             {% endfor %}
-        </div>
-        {{ include('Message/_form.html.twig') }}
+        </section>
+        <section>
+            <div>
+                <img>
+            </div>
+            <div>
+                <p>
+                    {{ otherUser.firstName|capitalize }} {{ otherUser.name }}
+                </p>
+            </div>
+            <div id="lesMessages">
+
+            </div>
+            {{ include('Message/_form.html.twig') }}
+        </section>
+
     </main>
+    <script>
+
+        const messagesDiv = document.querySelector('#lesMessages');
+
+        async function fetchMessages() {
+            try {
+                const response = await fetch('/message/get/{{ conversation.id }}');
+                if (response.ok) {
+                    const messages = await response.json();
+
+                    displayMessages(messages);
+
+                }
+            } catch (error) {
+                console.error('Erreur réseau :', error);
+
+            }
+        }
+
+        // Fonction pour afficher les messages
+        function displayMessages(messages) {
+            messagesDiv.innerHTML = ''; // Vider le contenu
+            let indice = 0;
+            messages[0].forEach(msg => {
+
+
+                const messageElement = document.createElement('p');
+
+                if (messages[1][indice] === messages[2]) {
+                    messageElement.className = "current-user"
+                } else {
+                    messageElement.className = "other-user"
+                }
+                messageElement.textContent = msg;
+                indice++
+                messagesDiv.appendChild(messageElement);
+            });
+        }
+
+        // Démarrage du polling toutes les 10 secondes
+        setInterval(fetchMessages, 10000);
+        fetchMessages(); // Récupération initiale
+
+
+    </script>
 {% endblock %}

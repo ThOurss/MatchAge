@@ -20,6 +20,7 @@ class MessageType extends AbstractType
                 'label' => ' ',
                 'attr' => [
                     'placeholder' => "Votre message",
+                   
                 ]
             ]);
 
