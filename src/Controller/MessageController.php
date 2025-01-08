@@ -9,10 +9,11 @@ use App\Form\MessageType;
 use App\Repository\ConversationRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-
+use App\Service\HashidsService;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,7 +21,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class MessageController extends AbstractController
 {
     #[Route('/message', name: 'app_message')]
-    public function index(EntityManagerInterface $entityManager, ConversationRepository $conversationRepository): Response
+    public function index(EntityManagerInterface $entityManager, ConversationRepository $conversationRepository, HashidsService $hashidsService): Response
     {
         $user = $this->getUser();
         if (!$user) {
@@ -41,7 +42,8 @@ class MessageController extends AbstractController
             }
             $deuxiemeUtilisateur[] = [
                 'conversation' => $conversation,
-                'otherUsers' => $otherUsers
+                'otherUsers' => $otherUsers,
+                'hash' => $hashidsService->encode($conversation->getId())
             ];
         }
 
@@ -53,21 +55,58 @@ class MessageController extends AbstractController
         ]);
     }
 
-    #[Route('/message/show/{id}', name: 'app_message_show')]
-    public function showConversation(Request $request, EntityManagerInterface $entityManager, Conversation $id): Response
+    #[Route('/message/show/{hash}', name: 'app_message_show')]
+    public function showConversation(string $hash, HashidsService $hashidsService, Request $request, EntityManagerInterface $entityManager, ConversationRepository $conversationRepository): Response
     {
+        $id = $hashidsService->decode($hash);
+
+        if (!$id) {
+            throw $this->createNotFoundException('Invalid user ID.');
+        }
         $user = $this->getUser();
         $message = new Message();
-        $conversation = $id;
+        $allConversations = $user->getConversation();
+        $deuxiemeUtilisateur = [];
+
+        // Pour chaque conversation, récupére les autres utilisateurs
+        foreach ($allConversations as $uneConversation) {
+            $otherUsers = [];
+            if ($uneConversation->getId() != $id) {
+
+                foreach ($uneConversation->getUser() as $participant) {
+                    if ($participant !== $user) {
+                        $otherUsers[] = $participant;
+                    }
+                }
+                $deuxiemeUtilisateur[] = [
+                    'conversation' => $uneConversation,
+                    'otherUsers' => $otherUsers,
+                    'hash' => $hashidsService->encode($uneConversation->getId())
+                ];
+            }
+
+        }
+
+        $conversation = $conversationRepository->find($id);
+
         foreach ($conversation->getUser() as $participant) {
             if ($participant !== $user) {
                 $otherUsers = $participant;
+
             }
         }
-        foreach ($conversation->getMessage() as $unMessage) {
-            $lesMessages[] = $unMessage;
+        if (count($conversation->getMessage()) === 0) {
+            $lesMessages = "";
+        } else {
+            foreach ($conversation->getMessage() as $unMessage) {
 
+                $lesMessages[] = $unMessage;
+
+
+            }
         }
+
+
         $form = $this->createForm(MessageType::class, $message, ['attr' => ['class' => 'form-message', 'id' => 'formMessage']]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -78,6 +117,7 @@ class MessageController extends AbstractController
             $entityManager->persist($message);
 
             $entityManager->flush();
+            return $this->redirectToRoute('app_message_show', ['hash' => $id]);
 
         }
 
@@ -87,14 +127,22 @@ class MessageController extends AbstractController
             'form' => $form->createView(),
             'messages' => $lesMessages,
             'currentUser' => $user,
-            'conversation' => $id,
+            'conversation' => $hashidsService->encode($id),
+            'allConversations' => $deuxiemeUtilisateur,
         ]);
     }
 
-    #[route('/message/get/{id}', name: 'app_get_message')]
-    public function getMessages(Request $request, EntityManagerInterface $entityManager, ConversationRepository $conversationRepository, Conversation $idConv): JsonResponse
+    #[route('/message/get/{hash}', name: 'app_get_message')]
+    public function getMessages(string $hash, HashidsService $hashidsService, ConversationRepository $conversationRepository): JsonResponse
     {
+        $id = $hashidsService->decode($hash);
+
+        if (!$id) {
+            throw $this->createNotFoundException('Invalid conversation ID.');
+        }
         $user = $this->getUser();
+        $idConv = $conversationRepository->find($id);
+
 
         foreach ($idConv->getMessage() as $unMessage) {
             $lesMessages[] = $unMessage->getContenue();

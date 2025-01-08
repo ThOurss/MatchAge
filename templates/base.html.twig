@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Welcome!{% endblock %}</title>
@@ -12,11 +12,12 @@
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
 <header>
 
     <ul>
         <li><a href="{{ path('app_login') }}">Inscription/connexion</a></li>
+        <li><a href="{{ path('app_accueil') }}">Accueil</a></li>
     </ul>
     <h1>MatchAge </h1>
     {% set currentRoute = app.request.attributes.get('_route') %}

@@ -26,6 +26,8 @@ services:
       - { name: doctrine.event_listener, event: preUpdate }
 
 
-
+  App\Service\HashidsService:
+    arguments:
+      $minLength: 10
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

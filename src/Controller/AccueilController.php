@@ -9,10 +9,10 @@ use App\Entity\User;
 use App\Form\MatchType;
 use App\Form\SearchType;
 use App\Repository\MatchUserRepository;
-use App\Service\MatchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,8 +24,9 @@ class AccueilController extends AbstractController
     #[Route('/', name: 'app_accueil')]
     public function index(Request                $request,
                           EntityManagerInterface $entityManager,
-                          MatchService           $matchService): Response
+                          Security               $security): Response
     {
+       
         $form = $this->createForm(SearchType::class);
         $form->handleRequest($request);
         $matches = [];
@@ -53,9 +54,9 @@ class AccueilController extends AbstractController
     }
 
     #[route('/search', name: 'search_progress')]
-    public function search(Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
+    public function search(Security $security, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
     {
-        $user = $this->getUser(); // Utilisateur connecté
+        $user = $security->getUser(); // Utilisateur connecté
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }

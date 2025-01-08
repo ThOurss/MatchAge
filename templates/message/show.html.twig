@@ -1,18 +1,19 @@
 {% extends 'base.html.twig' %}
 {% block title %}Message avec {{ otherUser.firstName }}{% endblock %}
+{% block body_class %}get-message{% endblock %}
 {% block body %}
-    <main>
+    <main class="">
         <section class="">
-            {% for conversation in conversation %}
+            {% for uneConversation in allConversations %}
                 <section>
                     <div>
                         <img src="" alt="">
 
                     </div>
                     <div>
-                        {% for user in conversation.otherUsers %}
+                        {% for user in uneConversation.otherUsers %}
                             <p>
-                                <a href="{{ path('app_message_show',{'id':conversation.conversation.id}) }}">{{ user.firstName }}</a>
+                                <a href="{{ path('app_message_show',{'hash':uneConversation.hash}) }}">{{ user.firstName }}</a>
                             </p>
                         {% endfor %}
                     </div>
@@ -32,55 +33,60 @@
                 </p>
             </div>
             <div id="lesMessages">
+                {% for unMessage in messages %}
 
+                    <p class="{% if unMessage.user.id == currentUser.id %}current-user{% else %}other-user{% endif %}">{{ unMessage.contenue }}</p>
+                {% endfor %}
             </div>
             {{ include('Message/_form.html.twig') }}
         </section>
 
     </main>
+
     <script>
 
-        const messagesDiv = document.querySelector('#lesMessages');
+        if (document.body.classList.contains('get-message')) {
+            async function fetchMessages() {
 
-        async function fetchMessages() {
-            try {
-                const response = await fetch('/message/get/{{ conversation.id }}');
-                if (response.ok) {
-                    const messages = await response.json();
+                try {
+                    const response = await fetch('/message/get/{{ conversation }}');
+                    if (response.ok) {
+                        const messages = await response.json();
 
-                    displayMessages(messages);
+                        displayMessages(messages);
+
+                    }
+                } catch (error) {
+                    console.error('Erreur réseau :', error);
 
                 }
-            } catch (error) {
-                console.error('Erreur réseau :', error);
-
             }
+
+            // Fonction pour afficher les messages
+            function displayMessages(messages) {
+                document.querySelector('#lesMessages').innerHTML = ''; // Vider le contenu
+                let indice = 0;
+                messages[0].forEach(msg => {
+
+
+                    const messageElement = document.createElement('p');
+
+                    if (messages[1][indice] === messages[2]) {
+                        messageElement.className = "current-user"
+                    } else {
+                        messageElement.className = "other-user"
+                    }
+                    messageElement.textContent = msg;
+                    indice++
+                    document.querySelector('#lesMessages').appendChild(messageElement);
+                });
+            }
+
+            // Démarrage du polling toutes les 10 secondes
+            setInterval(fetchMessages, 10000);
         }
-
-        // Fonction pour afficher les messages
-        function displayMessages(messages) {
-            messagesDiv.innerHTML = ''; // Vider le contenu
-            let indice = 0;
-            messages[0].forEach(msg => {
-
-
-                const messageElement = document.createElement('p');
-
-                if (messages[1][indice] === messages[2]) {
-                    messageElement.className = "current-user"
-                } else {
-                    messageElement.className = "other-user"
-                }
-                messageElement.textContent = msg;
-                indice++
-                messagesDiv.appendChild(messageElement);
-            });
-        }
-
-        // Démarrage du polling toutes les 10 secondes
-        setInterval(fetchMessages, 10000);
-        fetchMessages(); // Récupération initiale
 
 
     </script>
+
 {% endblock %}
