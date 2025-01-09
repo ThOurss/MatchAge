@@ -8,11 +8,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(
+    fields: ["email"],
+    message: "Cette adresse email est déjà utilisée."
+)]
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
@@ -35,6 +40,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(
         message: 'Veuillez renseigner votre date de naissance'
+    )]
+    #[Assert\LessThan(
+        value: '-15 years',
+        message: 'Vous devez avoir au moins 16 ans'
     )]
     private ?\DateTimeInterface $dateOfBirth = null;
 
@@ -287,7 +296,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function getRoles(): array
     {
-        return [$this->role?->getRoleName() ?? 'ROLE_USER'];
+        return [$this->role->getRoleName()];
     }
 
 

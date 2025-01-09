@@ -29,7 +29,7 @@ final class UserController extends AbstractController
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $role = $entityManager->getRepository(Role::class)->findOneBy(['roleName' => 'Utilisateur']);
+        $role = $entityManager->getRepository(Role::class)->findOneBy(['id' => 7]);
 
 
         $user = new User();
@@ -45,12 +45,12 @@ final class UserController extends AbstractController
             // Hachez le mot de passe
             $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
-            
+
             $entityManager->persist($user);
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_accueil');
         }
 
         return $this->render('user/new.html.twig', [
@@ -94,7 +94,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
+    #[Route('/delte/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {

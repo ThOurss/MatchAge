@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\HashidsService;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,15 +57,24 @@ class MessageController extends AbstractController
     }
 
     #[Route('/message/show/{hash}', name: 'app_message_show')]
-    public function showConversation(string $hash, HashidsService $hashidsService, Request $request, EntityManagerInterface $entityManager, ConversationRepository $conversationRepository): Response
+    public function showConversation(Security $security, string $hash, HashidsService $hashidsService, Request $request, EntityManagerInterface $entityManager, ConversationRepository $conversationRepository): Response
     {
         $id = $hashidsService->decode($hash);
 
         if (!$id) {
             throw $this->createNotFoundException('Invalid user ID.');
         }
-        $user = $this->getUser();
+        $user = $security->getUser();
         $message = new Message();
+
+        $conversation = $conversationRepository->find($id);
+        $lstParticipant = $conversation->getUser()->contains($user);
+        if (!$lstParticipant) {
+            // Rediriger si l'utilisateur n'est pas dans la conversation
+
+            return $this->redirectToRoute('app_accueil'); // Ou une autre route d'erreur
+        }
+
         $allConversations = $user->getConversation();
         $deuxiemeUtilisateur = [];
 
@@ -87,7 +97,6 @@ class MessageController extends AbstractController
 
         }
 
-        $conversation = $conversationRepository->find($id);
 
         foreach ($conversation->getUser() as $participant) {
             if ($participant !== $user) {
