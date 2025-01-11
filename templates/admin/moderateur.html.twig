@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des moderateurs{% endblock %}
+
+{% block body %}
+    <main>
+        <h1>Gestion des moderateurs</h1>
+
+        <section>
+            {% for moderateur in allmoderateurs %}
+                <section>
+                    <div>{{ moderateur.firstName }} {{ moderateur.name }}</div>
+
+                </section>
+            {% endfor %}
+        </section>
+    </main>
+{% endblock %}

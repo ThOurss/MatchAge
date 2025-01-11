@@ -9,6 +9,10 @@
         <aside>
             <ul>
                 <li><a href="{{ path('app_message') }}">Message</a></li>
+                <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                {% if admin %}
+                    <li><a href="{{ path('admin_dashboard') }}">Tableau de bord</a></li>
+                {% endif %}
             </ul>
         </aside>
         <div>

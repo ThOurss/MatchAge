@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs{% endblock %}
+
+{% block body %}
+    <main>
+        <h1>Gestion des utilisateurs</h1>
+
+        <section>
+            {% for user in allusers %}
+                <section>
+                    <div>{{ user.firstName }} {{ user.name }}</div>
+                    
+                </section>
+            {% endfor %}
+        </section>
+    </main>
+{% endblock %}

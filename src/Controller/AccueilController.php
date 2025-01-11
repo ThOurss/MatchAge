@@ -26,7 +26,8 @@ class AccueilController extends AbstractController
                           EntityManagerInterface $entityManager,
                           Security               $security): Response
     {
-       
+
+        $is_admin = $security->isGranted('ROLE_ADMIN');
         $form = $this->createForm(SearchType::class);
         $form->handleRequest($request);
         $matches = [];
@@ -50,6 +51,7 @@ class AccueilController extends AbstractController
             'form' => $form->createView(),
             'message' => '',
             'match' => $matches,
+            'admin' => $is_admin,
         ]);
     }
 
