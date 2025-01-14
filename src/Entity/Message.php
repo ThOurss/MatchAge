@@ -16,8 +16,8 @@ class Message
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $contenue = null;
+    #[ORM\Column(type: "text", nullable: true)]
+    private $contenue = null;
 
     #[ORM\Column(type: 'datetime')]
     private $dateEnvoie;
@@ -40,18 +40,6 @@ class Message
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getContenue(): ?string
-    {
-        return $this->contenue;
-    }
-
-    public function setContenue(?string $contenue): static
-    {
-        $this->contenue = $contenue;
-
-        return $this;
     }
 
 
@@ -111,6 +99,18 @@ class Message
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getContenue(): ?string
+    {
+        return $this->contenue;
+    }
+
+    public function setContenue(?string $contenue): static
+    {
+        $this->contenue = $contenue;
 
         return $this;
     }

@@ -22,16 +22,16 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank(
         message: 'Veuillez renseigner votre prénom'
     )]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank(
         message: 'Veuillez renseigner votre nom'
     )]
@@ -47,13 +47,17 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     )]
     private ?\DateTimeInterface $dateOfBirth = null;
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: 'integer', nullable: false)]
     private ?int $age;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Regex(
+        pattern: '/^(\+33|0)[1-9](\d{2}){4}$/',
+        message: "Le numéro de téléphone n'est pas valide"
+    )]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 250, unique: true)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank(
         message: 'Veuillez renseigner votre adresse email'
     )]
@@ -63,10 +67,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?string $email = null;
 
 
-    #[ORM\Column(length: 250)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(
+        message: 'Veuillez renseigner votre mot de passe'
+    )]
     #[Assert\Length(
         min: 8,
-        max: 4096,
+        max: 255,
         minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.",
         maxMessage: "Le mot de passe est trop long."
     )]
