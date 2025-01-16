@@ -5,18 +5,14 @@
 {% block body %}
 
 
-    <main data-controller="add-class">
-        <aside>
-            <ul>
-                <li><a href="{{ path('app_message') }}">Message</a></li>
-                <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
-                {% if admin %}
-                    <li><a href="{{ path('admin_dashboard') }}">Tableau de bord</a></li>
-                {% endif %}
-            </ul>
-        </aside>
-        <div>
+    <main data-controller="add-class" class="main-accueil">
 
+        <section>
+            <div class=" logo-page-accueil ">
+                <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge" class="logo-accueil" id="test-img"
+                     data-add-class-target="target">
+
+            </div>
             {{ form_start(form) }}
 
             {{ form_end(form) }}
@@ -25,7 +21,7 @@
                 filtre
             </button>
 
-        </div>
+        </section>
         <div id="result"></div>
     </main>
 

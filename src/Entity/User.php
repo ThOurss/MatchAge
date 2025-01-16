@@ -43,7 +43,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     )]
     #[Assert\LessThan(
         value: '-15 years',
-        message: 'Vous devez avoir au moins 16 ans'
+        message: 'Vous devez avoir au moins 15 ans'
     )]
     private ?\DateTimeInterface $dateOfBirth = null;
 
