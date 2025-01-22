@@ -26,36 +26,35 @@
     {% if currentRoute != 'search_progress' and currentRoute != 'app_message_show' %}
 
     {% endif %}
-    <aside>
+    <aside id="mySidenav" class="sidenav">
+        <a id="closeBtn" class="close">×</a>
         <nav>
             <ul>
                 <li><a href="{{ path('app_accueil') }}"><img>Accueil</a></li>
                 <li><a href="{{ path('app_message') }}"><img>Message</a></li>
-                <li><a href="{{ path('app_login') }}"><img>Se connecter</a></li>
-                <li><a href="{{ path('app_user_new') }}"><img>S'inscrire</a></li>
-                {% if admin %}
-                    <li><a href="{{ path('admin_dashboard') }}"><img>Tableau de bord</a></li>
+                {% if user is null %}
+                    <li><a href="{{ path('app_login') }}"><img>Se connecter</a></li>
+                    <li><a href="{{ path('app_user_new') }}"><img>S'inscrire</a></li>
                 {% endif %}
-                <li><a href="{{ path('app_logout') }}"><img>Se déconnecter</a></li>
+
+                {% if admin %}
+                    <li>
+                        <a href="{{ path('admin_dashboard') }}"
+                           class="{% if app.request.attributes.get('_route')=='admin_dashboard' %}navActive{% endif %}">
+                            <img>Tableau de bord</a>
+                    </li>
+                {% endif %}
+                {% if user %}
+                    <li><a href="{{ path('app_logout') }}" onclick="return confirm('Êtes vous sûrs ?')"><img>Se
+                            déconnecter</a></li>
+                {% endif %}
+
 
             </ul>
         </nav>
 
     </aside>
-    <div id="mySidenav" class="sidenav">
-        <a id="closeBtn" class="close">×</a>
-        <ul>
-            <li><a href="{{ path('app_accueil') }}">Accueil</a></li>
-            <li><a href="{{ path('app_message') }}">Message</a></li>
-            <li><a href="{{ path('app_login') }}">Se connecter</a></li>
-            <li><a href="{{ path('app_user_new') }}">S'inscrire</a></li>
-            {% if admin %}
-                <li><a href="{{ path('admin_dashboard') }}">Tableau de bord</a></li>
-            {% endif %}
-            <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
 
-        </ul>
-    </div>
 
     <a id="openBtn">
   <span class="burger-icon">

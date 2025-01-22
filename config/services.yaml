@@ -29,5 +29,10 @@ services:
   App\Service\HashidsService:
     arguments:
       $minLength: 10
+
+  App\Twig\HashidsExtension:
+    arguments:
+      $hashidsService: '@App\Service\HashidsService'
+    tags: [ 'twig.extension' ]
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

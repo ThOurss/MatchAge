@@ -1,14 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier les informations de {{ user.firstname }} {{ user.name }}{% endblock %}
+{% block title %}Modifier les informations de {{ userModif.firstname }} {{ userModif.name }}{% endblock %}
 
 {% block body %}
-    <h1>Modifier les informations de {{ user.firstname }} {{ user.name }}</h1>
+    <main>
+        <h1>Modifier les informations de {{ userModif.firstname }} {{ userModif.name }}</h1>
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-primary">Mettre à jour</button>
-    {{ form_end(form) }}
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">Mettre à jour</button>
+        {{ form_end(form) }}
 
-    <a href="{{ path('app_user_index') }}" class="btn btn-secondary">Retour</a>
+        <a href="{{ path('admin_users') }}" class="btn btn-secondary">Retour</a>
+    </main>
+
 {% endblock %}

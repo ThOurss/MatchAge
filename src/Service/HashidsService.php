@@ -10,7 +10,7 @@ class HashidsService
 
     public function __construct(int $minLength = 10)
     {
-        $this->hashids = new Hashids($minLength); // Longueur minimale de 10 caractères
+        $this->hashids = new Hashids('', $minLength); // Longueur minimale de 10 caractères
     }
 
     public function encode(int $id): string

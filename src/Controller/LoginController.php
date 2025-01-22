@@ -21,6 +21,7 @@ class LoginController extends AbstractController
     #[Route('/login', name: 'app_login')]
     public function index(AuthenticationUtils $authenticationUtils, Security $security): Response
     {
+        $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN');
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -33,6 +34,7 @@ class LoginController extends AbstractController
             'last_username' => $lastUsername,
             'error' => $error,
             'admin' => $is_admin,
+            'user' => $user
         ]);
     }
 

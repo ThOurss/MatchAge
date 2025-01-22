@@ -3,14 +3,30 @@
 {% block title %}Gestion des utilisateurs{% endblock %}
 
 {% block body %}
-    <main>
+    <main class="main-admin-users">
         <h1>Gestion des utilisateurs</h1>
 
-        <section>
+        <section class="grid-admin-users">
             {% for user in allusers %}
                 <section>
-                    <div>{{ user.firstName }} {{ user.name }}</div>
-                    
+                    <div>Prénom:<span>{{ user.firstName }}</span></div>
+                    <div>Nom:<span>{{ user.name }}</span></div>
+                    <div>Date de naissance:<span>{{ user.dateOfBirth ? user.dateOfBirth|date('d-m-Y') : '' }}</span>
+                    </div>
+                    <div>Age:<span>{{ user.age }}</span></div>
+                    <div>Téléphone:<span>{{ user.phone }}</span></div>
+                    <div>Email:<span>{{ user.email }}</span></div>
+                    <div>Civilité:<span>{{ user.civilite.civiliteName }}</span></div>
+                    <div>Pays:<span>{{ user.pays.namePays }}</span></div>
+                    <div>Role:<span>{{ user.role.roleName }}</span></div>
+                    <div>
+                        <a href="{{ path('admin_change_role',{'hash':hashid_encode(user.id)}) }}">Modifier</a>
+                        <form action="{{ path('admin_delete_user', { 'hash': hashid_encode(user.id) }) }}"
+                              method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                            <button type="submit" class="btn btn-danger">Supprimer l'utilisateur</button>
+                        </form>
+                    </div>
                 </section>
             {% endfor %}
         </section>

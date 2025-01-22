@@ -37,6 +37,7 @@ body header h1 {
     margin-left: 0.5rem;
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
+
     @media screen and (min-width: 767px) {
         display: flex;
         align-items: center;
@@ -45,15 +46,45 @@ body header h1 {
     }
 }
 
-body header aside {
-    display: none;
+body header .sidenav {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: -100%;
+    background-color: #257180;
+    padding-top: 60px;
+    transition: left 0.5s ease;
     @media screen and (min-width: 767px) {
+        position: static;
         display: block;
         margin-left: 0.5rem;
+        width: auto;
+        height: auto;
+        background-color: transparent;
+        padding-top: 0;
+        transition: none;
     }
 }
 
-body header aside nav ul li {
+body header .sidenav.active {
+    left: 0;
+}
+
+/* Close btn */
+body header .sidenav .close {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    color: #FFFFFF;
+    @media screen and (min-width: 767px) {
+        display: none;
+    }
+}
+
+body header .sidenav nav ul li {
     list-style: none;
     height: 50px;
     font-family: 'Roboto', sans-serif;
@@ -64,12 +95,45 @@ body header aside nav ul li {
 
 }
 
-body header aside nav ul li a {
+body header .sidenav nav ul li a {
+    padding: 8px 8px 8px 32px;
     text-decoration: none;
+    font-size: 25px;
+    color: #FFFFFF;
+    display: block;
+    transition: 0.3s;
+    @media screen and (min-width: 767px) {
+        padding: 0;
+        font-size: 16px;
+        color: #551A8B;
+        transition: none;
+    }
 }
 
-body header aside nav ul li a:hover {
+body header .sidenav nav ul li a:hover {
     color: #0044FF;
+    font-weight: bold;
+}
+
+body header .sidenav nav ul li .navActive {
+    color: #0044FF;
+    font-weight: bold;
+}
+
+#openBtn {
+    display: inline;
+    margin-right: 0.5rem;
+    @media screen and (min-width: 767px) {
+        display: none;
+    }
+}
+
+.burger-icon span {
+    display: block;
+    width: 35px;
+    height: 5px;
+    background-color: black;
+    margin: 6px 0;
 }
 
 body main {
@@ -186,73 +250,30 @@ body main .btn-send-message svg {
     width: 20px;
 }
 
-#mySidenav {
-    display: block;
-    @media screen and (min-width: 767px) {
-        display: none;
-    }
+body .main-admin-users h1 {
+    text-align: center;
+    margin-bottom: 3rem;
 }
 
-#openBtn {
-    display: inline;
-    margin-right: 0.5rem;
-    @media screen and (min-width: 767px) {
-        display: none;
-    }
+body .main-admin-users .grid-admin-users {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin: 0 3rem;
 }
 
-.sidenav {
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: -100%;
-    background-color: #257180;
-    padding-top: 60px;
-    transition: left 0.5s ease;
+body .main-admin-users .grid-admin-users section {
+    border: 1px solid #707070;
+    padding: 1rem;
 }
 
-/* Sidenav menu links */
-.sidenav a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #FFFFFF;
-    display: block;
-    transition: 0.3s;
+body .main-admin-users .grid-admin-users section div {
+    display: flex;
+    justify-content: space-between;
 }
 
-.sidenav a:hover {
-    color: #111;
-}
-
-.sidenav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* Active class */
-.sidenav.active {
-    left: 0;
-}
-
-/* Close btn */
-.sidenav .close {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-}
-
-/* Icône burger */
-.burger-icon span {
-    display: block;
-    width: 35px;
-    height: 5px;
-    background-color: black;
-    margin: 6px 0;
+body .main-admin-users .grid-admin-users section div:not(:last-of-type) {
+    margin-bottom: 10px;
 }
 
 @keyframes rotateimg {
