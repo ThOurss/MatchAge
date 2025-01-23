@@ -60,7 +60,8 @@ class AccueilController extends AbstractController
     #[route('/search', name: 'search_progress')]
     public function search(Security $security, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
     {
-        $user = $security->getUser(); // Utilisateur connecté
+        $user = $security->getUser();
+        $is_admin = $security->isGranted('ROLE_ADMIN'); // Utilisateur connecté
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
@@ -125,13 +126,17 @@ class AccueilController extends AbstractController
         }
 
         // Si aucun match trouvé, continuer la recherche
-        return $this->render('accueil/search_progress.html.twig');
+        return $this->render('accueil/search_progress.html.twig', [
+            'user' => $user,
+            'admin' => $is_admin,
+        ]);
     }
 
     #[route('/cancel_search', name: 'search_cancel')]
-    public function cancelSearch(EntityManagerInterface $entityManager): Response
+    public function cancelSearch(EntityManagerInterface $entityManager, Security $security): Response
     {
-        $user = $this->getUser();
+        $user = $security->getUser();
+
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
@@ -146,11 +151,13 @@ class AccueilController extends AbstractController
     #[route('/match_find/{id}', name: 'match_found')]
     public function matchFound(User $id, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
     {
+        $user = $security->getUser();
+        $is_admin = $security->isGranted('ROLE_ADMIN');
         $userMatch = $entityManager->getRepository(User::class)->findOneBy(['id' => $id]);
 
         $form = $this->createForm(MatchType::class);
         $form->handleRequest($request);
-        $user = $this->getUser();
+
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
@@ -229,15 +236,17 @@ class AccueilController extends AbstractController
         return $this->render('accueil/match_found.html.twig', [
             'form' => $form->createView(),
             'matchName' => $userMatch,
-
+            'user' => $user,
+            'admin' => $is_admin,
         ]);
     }
 
     #[Route('/match_accept/{id}', name: 'match_accept')]
-    public function matchAcceptWait(User $id, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function matchAcceptWait(User $id, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, CsrfTokenManagerInterface $csrfTokenManager, Security $security): Response
     {
 
-        $user = $this->getUser();
+        $user = $security->getUser();
+        $is_admin = $security->isGranted('ROLE_ADMIN');
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
@@ -256,13 +265,16 @@ class AccueilController extends AbstractController
             'matchName' => $userMatch,
             'statut' => $statut,
             'matchUser' => $match,
+            'user' => $user,
+            'admin' => $is_admin,
         ]);
     }
 
     #[Route('/match_delete/{id}', name: 'delete_matchUser', methods: ['POST'])]
-    public function deleteMatch(MatchUser $match, Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager, MatchUserRepository $matchUserRepository): Response
+    public function deleteMatch(Security $security, MatchUser $match, Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager, MatchUserRepository $matchUserRepository): Response
     {
-        $user = $this->getUser();
+        $user = $security->getUser();
+        $is_admin = $security->isGranted('ROLE_ADMIN');
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }

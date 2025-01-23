@@ -122,6 +122,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'user')]
     private Collection $message;
 
+    #[ORM\Column(type: 'boolean')]
+    private $isDelete = false;
+
     public function __construct()
     {
         $this->signalements = new ArrayCollection();
@@ -421,6 +424,25 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
                 $message->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function setIsSearching(bool $isSearching): static
+    {
+        $this->isSearching = $isSearching;
+
+        return $this;
+    }
+
+    public function isDelete(): ?bool
+    {
+        return $this->isDelete;
+    }
+
+    public function setIsDelete(bool $isDelete): static
+    {
+        $this->isDelete = $isDelete;
 
         return $this;
     }

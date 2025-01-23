@@ -23,6 +23,9 @@ class LoginController extends AbstractController
     {
         $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN');
+        if ($is_admin) {
+            dd('test');
+        }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 

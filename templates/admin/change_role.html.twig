@@ -11,7 +11,7 @@
         <button class="btn btn-primary">Mettre à jour</button>
         {{ form_end(form) }}
 
-        <a href="{{ path('admin_users') }}" class="btn btn-secondary">Retour</a>
+        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-secondary">Retour</a>
     </main>
 
 {% endblock %}

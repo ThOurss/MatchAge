@@ -14,7 +14,14 @@
                 <div>
                     {% for user in conversation.otherUsers %}
                         <p>
-                            <a href="{{ path('app_message_show',{'hash':conversation.hash}) }}">{{ user.firstName }}</a>
+                            <a href="{{ path('app_message_show',{'hash':conversation.hash}) }}">
+
+                                {% if user.isDelete !=true %}
+                                    {{ user.firstName }}
+                                {% else %}
+                                    Utilisateur supprimé
+                                {% endif %}
+                            </a>
                         </p>
                     {% endfor %}
                 </div>

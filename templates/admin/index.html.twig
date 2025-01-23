@@ -2,13 +2,13 @@
 {% block title %}Tableau de bord{% endblock %}
 
 {% block body %}
-    <main>
-        <h1>Tableau de bord</h1>
+    <main class="main-dashboard-admin">
+        <h2>Tableau de bord</h2>
 
-        <section>
+        <section class="grid-dashboard-admin">
             <section>
                 <a href="{{ path('admin_users') }}">
-                    <div>
+                    <div class="div-svg">
                         <svg width="128" height="128" viewBox="28.293 28.142 72.624 72.775"
                              xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -24,14 +24,17 @@
                         </svg>
                     </div>
                     <div>
-                        <h2>Gestion des utilisateurs</h2>
+                        <h3>
+                            
+                            Gestion des utilisateurs
+                        </h3>
                         <p>Voir et supprimer des utilisateurs</p>
                     </div>
                 </a>
             </section>
             <section>
                 <a href="{{ path('admin_moderateurs') }}">
-                    <div>
+                    <div class="div-svg">
                         <svg width="128" height="128" viewBox="28.293 28.142 72.624 72.775"
                              xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -47,7 +50,10 @@
                         </svg>
                     </div>
                     <div>
-                        <h2>Gestion des modérateurs</h2>
+                        <h3>
+
+                            Gestion des modérateurs
+                        </h3>
                         <p>Voir et supprimer des modérateurs</p>
                     </div>
                 </a>

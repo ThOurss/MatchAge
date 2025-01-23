@@ -22,9 +22,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class MessageController extends AbstractController
 {
     #[Route('/message', name: 'app_message')]
-    public function index(EntityManagerInterface $entityManager, ConversationRepository $conversationRepository, HashidsService $hashidsService): Response
+    public function index(EntityManagerInterface $entityManager, ConversationRepository $conversationRepository, HashidsService $hashidsService, Security $security): Response
     {
-        $user = $this->getUser();
+        $user = $security->getUser();
+
+        $is_admin = $security->isGranted('ROLE_ADMIN');
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
@@ -51,7 +53,8 @@ class MessageController extends AbstractController
 
         return $this->render('message/index.html.twig', [
             'conversations' => $deuxiemeUtilisateur,
-
+            'user' => $user,
+            'admin' => $is_admin,
 
         ]);
     }
@@ -59,12 +62,16 @@ class MessageController extends AbstractController
     #[Route('/message/show/{hash}', name: 'app_message_show')]
     public function showConversation(Security $security, string $hash, HashidsService $hashidsService, Request $request, EntityManagerInterface $entityManager, ConversationRepository $conversationRepository): Response
     {
+
         $id = $hashidsService->decode($hash);
 
         if (!$id) {
+
             throw $this->createNotFoundException('Invalid user ID.');
         }
         $user = $security->getUser();
+
+        $is_admin = $security->isGranted('ROLE_ADMIN');
         $message = new Message();
 
         $conversation = $conversationRepository->find($id);
@@ -126,7 +133,7 @@ class MessageController extends AbstractController
             $entityManager->persist($message);
 
             $entityManager->flush();
-            return $this->redirectToRoute('app_message_show', ['hash' => $id]);
+            return $this->redirectToRoute('app_message_show', ['hash' => $hashidsService->encode($id)]);
 
         }
 
@@ -138,6 +145,8 @@ class MessageController extends AbstractController
             'currentUser' => $user,
             'conversation' => $hashidsService->encode($id),
             'allConversations' => $deuxiemeUtilisateur,
+            'user' => $user,
+            'admin' => $is_admin,
         ]);
     }
 
@@ -147,6 +156,7 @@ class MessageController extends AbstractController
         $id = $hashidsService->decode($hash);
 
         if (!$id) {
+
             throw $this->createNotFoundException('Invalid conversation ID.');
         }
         $user = $this->getUser();
@@ -157,7 +167,11 @@ class MessageController extends AbstractController
             $lesMessages[] = $unMessage->getContenue();
             $userMessage[] = $unMessage->getUser()->getId();
         }
-
+        if (count($idConv->getMessage()) === 0) {
+            $lesMessages = "";
+            $userMessage = "";
+            return new JsonResponse([$lesMessages, $userMessage, $user->getId()]);
+        }
         return new JsonResponse([$lesMessages, $userMessage, $user->getId()]);
     }
 }

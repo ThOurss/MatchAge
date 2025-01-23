@@ -27,26 +27,29 @@ final class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, Security $security): Response
     {
+        $user = $security->getUser();
+
+        $is_admin = $security->isGranted('ROLE_ADMIN');
         $role = $entityManager->getRepository(Role::class)->findOneBy(['id' => 7]);
 
 
-        $user = new User();
+        $userNew = new User();
 
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $userNew);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setRole($role);
+            $userNew->setRole($role);
 
             $plainPassword = $form->get('password')->getData();
 
             // Hachez le mot de passe
-            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-            $user->setPassword($hashedPassword);
+            $hashedPassword = $passwordHasher->hashPassword($userNew, $plainPassword);
+            $userNew->setPassword($hashedPassword);
 
-            $entityManager->persist($user);
+            $entityManager->persist($userNew);
 
             $entityManager->flush();
 
@@ -55,6 +58,7 @@ final class UserController extends AbstractController
 
         return $this->render('user/new.html.twig', [
             'user' => $user,
+            'admin' => $is_admin,
             'form' => $form,
         ]);
     }

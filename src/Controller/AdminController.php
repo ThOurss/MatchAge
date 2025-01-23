@@ -34,19 +34,16 @@ class AdminController extends AbstractController
     public function crudUser(UserRepository $userRepository, Security $security, Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $security->getUser();
-        $form = $this->createForm(DeleteUserType::class);
-        $form->handleRequest($request);
-        $is_admin = $security->isGranted('ROLE_ADMIN');
-        $allusers = $userRepository->findBy(['role' => 7]);
-        if ($form->isSubmitted() && $form->isValid()) {
 
-        }
+        $is_admin = $security->isGranted('ROLE_ADMIN');
+        $allusers = $userRepository->findBy(['role' => 7, 'isDelete' => 0]);
+
 
         return $this->render('admin/users.html.twig', [
             'user' => $user,
             'admin' => $is_admin,
             'allusers' => $allusers,
-            'form' => $form->createView()
+
         ]);
     }
 
@@ -56,12 +53,12 @@ class AdminController extends AbstractController
         $user = $security->getUser();
 
         $is_admin = $security->isGranted('ROLE_ADMIN');
-        $allmoderateurs = $userRepository->findBy(['role' => 8]);
+        $allmoderateurs = $userRepository->findBy(['role' => 8, 'isDelete' => 0]);
 
-        return $this->render('admin/moderateur.html.twig', [
+        return $this->render('admin/users.html.twig', [
             'user' => $user,
             'admin' => $is_admin,
-            'allmoderateurs' => $allmoderateurs,
+            'allusers' => $allmoderateurs,
         ]);
     }
 
@@ -111,7 +108,7 @@ class AdminController extends AbstractController
 
         // Vérification du jeton CSRF
         if ($csrfTokenManager->isTokenValid(new CsrfToken('delete' . $idUser, $submittedToken))) {
-            $entityManager->remove($userRemove);
+            $userRemove->setIsDelete(true);
             $entityManager->flush();
 
             return $this->redirectToRoute('admin_users');

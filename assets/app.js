@@ -25,3 +25,7 @@ function openNav() {
 function closeNav() {
     sidenav.classList.remove("active");
 }
+
+document.addEventListener('turbo:load', function () {
+    Turbo.session.drive = false;
+});

@@ -30,18 +30,35 @@
         <a id="closeBtn" class="close">×</a>
         <nav>
             <ul>
-                <li><a href="{{ path('app_accueil') }}"><img>Accueil</a></li>
-                <li><a href="{{ path('app_message') }}"><img>Message</a></li>
+                <li>
+                    <a href="{{ path('app_accueil') }}"
+                       class="{% if app.request.attributes.get('_route')=='app_accueil' %}navActive{% endif %}"><img>Accueil
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_message') }}"
+                       class="{% if app.request.attributes.get('_route')=='app_message' %}navActive{% endif %} "><img>Message</a>
+                </li>
                 {% if user is null %}
-                    <li><a href="{{ path('app_login') }}"><img>Se connecter</a></li>
-                    <li><a href="{{ path('app_user_new') }}"><img>S'inscrire</a></li>
+                    <li>
+                        <a href="{{ path('app_login') }}"
+                           class="{% if app.request.attributes.get('_route')=='app_login' %}navActive{% endif %}"><img>Se
+                            connecter
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_user_new') }}"
+                           class="{% if app.request.attributes.get('_route')=='app_user_new' %}navActive{% endif %}"><img>S'inscrire
+                        </a>
+                    </li>
                 {% endif %}
 
                 {% if admin %}
                     <li>
                         <a href="{{ path('admin_dashboard') }}"
                            class="{% if app.request.attributes.get('_route')=='admin_dashboard' %}navActive{% endif %}">
-                            <img>Tableau de bord</a>
+                            <img>Tableau de bord
+                        </a>
                     </li>
                 {% endif %}
                 {% if user %}

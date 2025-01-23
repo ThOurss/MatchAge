@@ -5,11 +5,15 @@
 {% endblock %}
 
 {% block body %}
-    <div class=" logo-page-accueil ">
-        <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge" class="logo-accueil search-actif" id="test-img"
-             data-add-class-target="target">
+    <main>
+        <div class=" logo-page-accueil ">
+            <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge" class="logo-accueil search-actif"
+                 id="test-img"
+                 data-add-class-target="target">
 
-    </div>
-    <p>Recherche en cours... Veuillez patienter.</p>
-    <a href="{{ path('search_cancel') }}">Annuler la recherche</a>
+        </div>
+        <p>Recherche en cours... Veuillez patienter.</p>
+        <a href="{{ path('search_cancel') }}">Annuler la recherche</a>
+    </main>
+
 {% endblock %}

@@ -1,5 +1,12 @@
 {% extends 'base.html.twig' %}
-{% block title %}Message avec {{ otherUser.firstName }}{% endblock %}
+{% block title %}Message avec
+    {% if otherUser.isDelete !=true %}
+        {{ otherUser.firstName }}
+    {% else %}
+        Utilisateur supprimé
+    {% endif %}
+  
+{% endblock %}
 {% block body_class %}get-message{% endblock %}
 {% block body %}
     <main class="">
@@ -13,7 +20,14 @@
                     <div>
                         {% for user in uneConversation.otherUsers %}
                             <p>
-                                <a href="{{ path('app_message_show',{'hash':uneConversation.hash}) }}">{{ user.firstName }}</a>
+
+                                <a href="{{ path('app_message_show',{'hash':uneConversation.hash}) }}">
+                                    {% if user.isDelete !=true %}
+                                        {{ user.firstName }}
+                                    {% else %}
+                                        Utilisateur supprimé
+                                    {% endif %}
+                                </a>
                             </p>
                         {% endfor %}
                     </div>
@@ -29,7 +43,12 @@
             </div>
             <div>
                 <p>
-                    {{ otherUser.firstName|capitalize }} {{ otherUser.name }}
+                    {% if otherUser.isDelete !=true %}
+                        {{ otherUser.firstName|capitalize }} {{ otherUser.name }}
+                    {% else %}
+                        Utilisateur supprimé
+                    {% endif %}
+
                 </p>
             </div>
             <div id="lesMessages">
@@ -38,7 +57,7 @@
                     <p class="{% if unMessage.user.id == currentUser.id %}current-user{% else %}other-user{% endif %}">{{ unMessage.contenue }}</p>
                 {% endfor %}
             </div>
-            {{ include('Message/_form.html.twig') }}
+            {{ include('message/_form.html.twig') }}
         </section>
 
     </main>
@@ -52,10 +71,13 @@
                     const response = await fetch('/message/get/{{ conversation }}');
                     if (response.ok) {
                         const messages = await response.json();
+                        if (messages[0] !== "") {
+                            displayMessages(messages);
+                        }
 
-                        displayMessages(messages);
 
                     }
+
                 } catch (error) {
                     console.error('Erreur réseau :', error);
 

@@ -23,13 +23,20 @@ body header {
     @media screen and (min-width: 767px) {
         display: block;
         width: 22vw;
-        height: 100vh;
+        min-height: 100vh;
+        height: auto;
         border-right: 1px solid #707070;
         border-bottom: 0;
         margin-bottom: 0;
     }
     @media screen and (min-width: 992px) {
-        width: 10vw;
+        width: 17vw;
+    }
+    @media screen and (min-width: 1200px) {
+        width: 15vw;
+    }
+    @media screen and (min-width: 1400px) {
+        width: 13vw;
     }
 }
 
@@ -143,8 +150,14 @@ body main {
         width: 78vw;
     }
     @media screen and (min-width: 992px) {
-        width: 90vw;
+        width: 83vw;
         margin-top: 3rem;
+    }
+    @media screen and (min-width: 1200px) {
+        width: 85vw;
+    }
+    @media screen and (min-width: 1400px) {
+        width: 87vw;
     }
 }
 
@@ -250,16 +263,34 @@ body main .btn-send-message svg {
     width: 20px;
 }
 
-body .main-admin-users h1 {
+body .main-admin-users h2 {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
+    font-family: 'Roboto bold', sans-serif;
+    @media screen and (min-width: 767px) {
+        margin-bottom: 3rem;
+    }
 }
 
 body .main-admin-users .grid-admin-users {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: 1fr;
     gap: 1rem;
-    margin: 0 3rem;
+    max-width: 95%;
+    margin: 0 auto;
+    @media screen and (min-width: 767px) {
+        grid-template-columns: repeat(2, 48%);
+        margin: 0 2rem;
+        max-width: 100%;
+        justify-content: space-between;
+    }
+    @media screen and (min-width: 992px) {
+        grid-template-columns: repeat(2, 48%);
+        margin: 0 3rem;
+    }
+    @media screen and (min-width: 1400px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
 
 body .main-admin-users .grid-admin-users section {
@@ -274,6 +305,142 @@ body .main-admin-users .grid-admin-users section div {
 
 body .main-admin-users .grid-admin-users section div:not(:last-of-type) {
     margin-bottom: 10px;
+}
+
+body .main-admin-users .grid-admin-users section .pays-email-gestion-user span {
+    max-width: 70%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+body .main-admin-users .grid-admin-users section .btn-gestion-user {
+    height: 50px;
+
+}
+
+body .main-admin-users .grid-admin-users section .btn-gestion-user div {
+    background-color: #01204E;
+    align-self: center;
+    height: 100%;
+    text-align: center;
+    width: 45%;
+    justify-content: center;
+}
+
+body .main-admin-users .grid-admin-users section .btn-gestion-user div a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+    text-transform: uppercase;
+
+    font-size: 12px;
+    height: 100%;
+    width: 100%;
+    @media screen and (min-width: 992px) {
+        font-size: 14px;
+    }
+}
+
+body .main-admin-users .grid-admin-users section .btn-gestion-user form {
+    margin: 0;
+    width: 45%;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+    height: 100%;
+
+}
+
+body .main-admin-users .grid-admin-users section .btn-gestion-user form button {
+    background-color: #01204E;
+    border: none;
+    color: #fff;
+    height: 100%;
+    width: 100%;
+    text-transform: uppercase;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    @media screen and (min-width: 992px) {
+        font-size: 14px;
+    }
+}
+
+body .main-dashboard-admin h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-family: 'Roboto bold', sans-serif;
+    @media screen and (min-width: 767px) {
+        margin-bottom: 3rem;
+    }
+}
+
+body .main-dashboard-admin .grid-dashboard-admin {
+    max-width: 95%;
+    margin: 0 auto 30px;
+    grid-template-columns: 1fr;
+    display: grid;
+    gap: 1rem 0;
+    @media screen and (min-width: 767px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        max-width: 100%;
+        margin: 0 2rem;
+    }
+    @media screen and (min-width: 992px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    @media screen and (min-width: 1400px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+body .main-dashboard-admin .grid-dashboard-admin section {
+    border: 1px solid #707070;
+    padding: 0.5rem;
+    height: 80px;
+    @media screen and (min-width: 767px) {
+        height: auto;
+    }
+    @media screen and (min-width: 1400px) {
+        height: 105px;
+    }
+}
+
+body .main-dashboard-admin .grid-dashboard-admin section a {
+    display: flex;
+    align-items: center;
+
+    text-decoration: none;
+    height: 100%;
+}
+
+body .main-dashboard-admin .grid-dashboard-admin section a div h3 {
+    font-family: 'Roboto bold', sans-serif;
+    color: #000000;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+body .main-dashboard-admin .grid-dashboard-admin section a div p {
+    font-family: 'Roboto ', sans-serif;
+    color: #000000;
+    font-size: 14px;
+}
+
+body .main-dashboard-admin .grid-dashboard-admin section a .div-svg {
+    width: 30px;
+    height: 30px;
+    margin-right: 1rem;
+}
+
+body .main-dashboard-admin .grid-dashboard-admin section a .div-svg svg {
+    width: 100%;
+    height: 100%;
 }
 
 @keyframes rotateimg {
