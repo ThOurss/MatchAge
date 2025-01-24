@@ -1,6 +1,20 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+<section class="coordonee-inscription">
+    <h3> Coordonnées</h3>
+    {{ form_row(form.firstName) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.dateOfBirth) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.phone) }}
+    {{ form_row(form.civilite) }}
+    {{ form_row(form.pays) }}
+    {{ form_row(form.role) }}
+    <div>
+        <button class="btn">{{ button_label|default("Modifier") }}</button>
+    </div>
+    <div><a href="{{ app.request.headers.get('referer') }}" class="btn btn-secondary">Retour sans modifier</a></div>
+
+</section>
 
 
-<button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

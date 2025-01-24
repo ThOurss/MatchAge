@@ -2,6 +2,20 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Roboto ', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto bold', sans-serif;
+}
+
+
+p, label, legend, select, input {
+    font-size: 14px;
+    @media screen and (min-width: 992px) {
+        font-size: 16px;
+
+    }
 }
 
 body {
@@ -441,6 +455,176 @@ body .main-dashboard-admin .grid-dashboard-admin section a .div-svg {
 body .main-dashboard-admin .grid-dashboard-admin section a .div-svg svg {
     width: 100%;
     height: 100%;
+}
+
+body .main-inscription h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+body .main-inscription form {
+    width: 100%;
+    max-width: 95%;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+    @media screen and (min-width: 992px) {
+        display: flex;
+        justify-content: space-between;
+    }
+    @media screen and (min-width: 1400px) {
+        justify-content: space-evenly;
+    }
+}
+
+body .main-inscription.admin form {
+
+    @media screen and (min-width: 992px) {
+
+        justify-content: center;
+    }
+    @media screen and (min-width: 1400px) {
+        justify-content: space-evenly;
+    }
+}
+
+body .main-inscription.admin a {
+    text-align: center;
+    height: 50px;
+    background-color: #01204E;
+    font-size: 16px;
+    color: white;
+
+    width: 100%;
+    border: none;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+
+
+}
+
+body .main-inscription form h3 {
+    margin-bottom: 1.5rem;
+}
+
+body .main-inscription form .coordonee-inscription {
+    margin-bottom: 2rem;
+    @media screen and (min-width: 992px) {
+        width: 45%;
+    }
+    @media screen and (min-width: 1400px) {
+        width: 30%;
+    }
+}
+
+body .main-inscription form .connexion-inscription {
+    margin-bottom: 1rem;
+    @media screen and (min-width: 992px) {
+        width: 45%;
+    }
+    @media screen and (min-width: 1400px) {
+        width: 30%;
+    }
+}
+
+body .main-inscription form div:not(:last-of-type) {
+    margin-bottom: 20px;
+}
+
+body .main-inscription form .form-date-style {
+    border: 0;
+    margin-bottom: 20px;
+}
+
+body .main-inscription form .form-date-style legend {
+
+    margin-bottom: 10px;
+}
+
+body .main-inscription form .form-date-style div .input-group {
+
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+body .main-inscription form .form-date-style div .input-group select {
+    background-color: #257180;
+    border: 0;
+    color: #fff;
+    height: 30px;
+    outline: none;
+    width: 30%;
+    cursor: pointer;
+}
+
+body .main-inscription form .form-date-style div .visually-hidden {
+    display: none;
+}
+
+body .main-inscription form .form-div-flex {
+    display: flex;
+    flex-direction: column
+}
+
+body .main-inscription form .form-div-flex label {
+    margin-bottom: 0.5rem;
+}
+
+body .main-inscription form .form-div-flex select {
+    background-color: #257180;
+    border: 0;
+    color: #fff;
+    height: 30px;
+    outline: none;
+    cursor: pointer;
+}
+
+body .main-inscription form .form-div-flex #user_civilite {
+    width: 30%;
+
+}
+
+body .main-inscription form div input {
+    outline: none;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid #707070;
+    font-family: 'Roboto ', sans-serif;
+    width: 100%;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+
+body .main-inscription form div input::placeholder {
+    color: #000000;
+    font-size: 14px;
+    @media screen and (min-width: 992px) {
+        font-size: 16px;
+    }
+}
+
+body .main-inscription form div .label-none {
+    display: none;
+}
+
+body .main-inscription form .mention-obligatoire {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+body .main-inscription form button {
+    height: 50px;
+    background-color: #01204E;
+    font-size: 16px;
+    color: white;
+    width: 100%;
+    border: none;
+    text-transform: uppercase;
+    cursor: pointer;
 }
 
 @keyframes rotateimg {

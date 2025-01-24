@@ -3,15 +3,12 @@
 {% block title %}Modifier les informations de {{ userModif.firstname }} {{ userModif.name }}{% endblock %}
 
 {% block body %}
-    <main>
-        <h1>Modifier les informations de {{ userModif.firstname }} {{ userModif.name }}</h1>
+    <main class="main-inscription admin">
+        <h2>Modifier les informations de {{ userModif.firstname }} {{ userModif.name }}</h2>
 
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-primary">Mettre à jour</button>
-        {{ form_end(form) }}
+        {{ include('admin/_form.html.twig') }}
 
-        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-secondary">Retour</a>
+
     </main>
 
 {% endblock %}

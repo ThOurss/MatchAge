@@ -56,7 +56,7 @@
                 {% if admin %}
                     <li>
                         <a href="{{ path('admin_dashboard') }}"
-                           class="{% if app.request.attributes.get('_route')=='admin_dashboard' %}navActive{% endif %}">
+                           class="{% if app.request.pathinfo starts with '/admin' %}navActive{% endif %}">
                             <img>Tableau de bord
                         </a>
                     </li>

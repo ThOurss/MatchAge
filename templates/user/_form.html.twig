@@ -1,7 +1,21 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+<section class="coordonee-inscription">
+    <h3>1. Coordonnées</h3>
+    {{ form_row(form.firstName) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.dateOfBirth) }}
+    {{ form_row(form.phone) }}
+    {{ form_row(form.civilite) }}
+    {{ form_row(form.pays) }}
+</section>
+<section class="connexion-inscription">
+    <h3>2. Connexion</h3>
+    {{ form_row(form.email) }}
+    {{ form_row(form.password) }}
+    <div class="mention-obligatoire"><p>* Mention obligatoire</p></div>
 
-<div><p>* Mention obligatoire</p></div>
+    <button class="btn">{{ button_label|default("S'inscrire") }}</button>
+</section>
 
-<button class="btn">{{ button_label|default('Save') }}</button>
+
 {{ form_end(form) }}
