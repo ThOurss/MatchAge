@@ -5,51 +5,35 @@
     {% else %}
         Utilisateur supprimé
     {% endif %}
-  
+
 {% endblock %}
 {% block body_class %}get-message{% endblock %}
 {% block body %}
-    <main class="">
-        <section class="">
-            {% for uneConversation in allConversations %}
-                <section>
-                    <div>
-                        <img src="" alt="">
+    <main class="main-user-discussion">
+        {{ include('message/conversation.html.twig') }}
+        <section class="section-message-user">
 
-                    </div>
-                    <div>
-                        {% for user in uneConversation.otherUsers %}
-                            <p>
+            <div class="photo-nom-user">
+                <div class="image-profil">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15.75" height="18" viewBox="0 0 15.75 18">
+                        <path id="Tracé_8" data-name="Tracé 8"
+                              d="M10.688,4.5A2.813,2.813,0,1,0,7.875,7.313,2.813,2.813,0,0,0,10.688,4.5Zm-7.312,0A4.5,4.5,0,1,1,7.875,9a4.5,4.5,0,0,1-4.5-4.5ZM1.733,16.313H14.02a4.582,4.582,0,0,0-4.535-3.938H6.272a4.582,4.582,0,0,0-4.535,3.938ZM0,16.956a6.267,6.267,0,0,1,6.268-6.268H9.482a6.267,6.267,0,0,1,6.268,6.268A1.044,1.044,0,0,1,14.706,18H1.044A1.044,1.044,0,0,1,0,16.956Z"
+                              fill="#fff"/>
+                    </svg>
 
-                                <a href="{{ path('app_message_show',{'hash':uneConversation.hash}) }}">
-                                    {% if user.isDelete !=true %}
-                                        {{ user.firstName }}
-                                    {% else %}
-                                        Utilisateur supprimé
-                                    {% endif %}
-                                </a>
-                            </p>
-                        {% endfor %}
-                    </div>
-                    <div>
-                        <p></p>
-                    </div>
-                </section>
-            {% endfor %}
-        </section>
-        <section>
-            <div>
-                <img>
-            </div>
-            <div>
-                <p>
-                    {% if otherUser.isDelete !=true %}
-                        {{ otherUser.firstName|capitalize }} {{ otherUser.name }}
-                    {% else %}
-                        Utilisateur supprimé
-                    {% endif %}
 
-                </p>
+                </div>
+                <div>
+                    <p>
+                        {% if otherUser.isDelete !=true %}
+                            {{ otherUser.firstName|capitalize }} {{ otherUser.name }}
+                        {% else %}
+                            Utilisateur supprimé
+                        {% endif %}
+
+                    </p>
+                </div>
+
             </div>
             <div id="lesMessages">
                 {% for unMessage in messages %}
@@ -68,7 +52,7 @@
             async function fetchMessages() {
 
                 try {
-                    const response = await fetch('/message/get/{{ conversation }}');
+                    const response = await fetch('/message/get/{{ laConversation }}');
                     if (response.ok) {
                         const messages = await response.json();
                         if (messages[0] !== "") {
@@ -105,8 +89,20 @@
             }
 
             // Démarrage du polling toutes les 10 secondes
-            setInterval(fetchMessages, 10000);
+            setInterval(fetchMessages, 1000000);
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.auto-resize').forEach(function (textarea) {
+                textarea.style.overflow = 'hidden'; // Pour éviter les barres de défilement
+                textarea.style.height = textarea.scrollHeight + 'px';
+
+                textarea.addEventListener('input', function () {
+                    textarea.style.height = 'auto'; // Réinitialise la hauteur
+                    textarea.style.height = textarea.scrollHeight + 'px'; // Ajuste selon le contenu
+                });
+            });
+        });
 
 
     </script>

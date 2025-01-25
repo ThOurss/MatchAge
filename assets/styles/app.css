@@ -253,6 +253,9 @@ body .logo-page-accueil {
         width: 25vw;
     }
     @media screen and (min-width: 992px) {
+        width: 15vw;
+    }
+    @media screen and (min-width: 1400px) {
         width: 10vw;
     }
 }
@@ -261,21 +264,6 @@ body .logo-page-accueil img {
     width: 100%;
 }
 
-body main .form-message {
-    display: flex;
-}
-
-body main div .current-user {
-    color: red;
-}
-
-body main div .other-user {
-    color: blue;
-}
-
-body main .btn-send-message svg {
-    width: 20px;
-}
 
 body .main-admin-users h2 {
     text-align: center;
@@ -624,6 +612,244 @@ body .main-inscription form button {
     width: 100%;
     border: none;
     text-transform: uppercase;
+    cursor: pointer;
+}
+
+body .main-accueil form {
+    width: 100%;
+    max-width: 95%;
+    margin: 0 auto;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+body .main-accueil form div {
+    display: flex;
+    justify-content: center;
+}
+
+body .main-accueil form div button {
+    height: 50px;
+    background-color: #01204E;
+    font-size: 16px;
+    color: white;
+    width: 100%;
+    border: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    @media screen and (min-width: 767px) {
+        width: 60%;
+    }
+    @media screen and (min-width: 1200px) {
+        width: 40%;
+    }
+}
+
+body .lesConversations {
+    max-width: 95%;
+    margin: 0 auto;
+    @media screen and (min-width: 992px) {
+        max-width: 35%;
+        margin: 0 0 0 20px;
+
+    }
+    @media screen and (min-width: 1200px) {
+        max-width: 30%;
+    }
+    @media screen and (min-width: 1400px) {
+        max-width: 25%;
+    }
+}
+
+
+body .lesConversations section a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+}
+
+body .lesConversations section:not(:last-of-type) {
+    margin-bottom: 20px;
+
+}
+
+body .lesConversations section .image-profil {
+    height: 40px;
+    width: 40px;
+    background-color: #01204E;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+
+}
+
+body .lesConversations section .prenom-contenue {
+    max-width: 65%;
+    width: 100%;
+}
+
+body .lesConversations section .prenom-contenue p {
+    display: flex;
+    flex-direction: column;
+
+}
+
+body .lesConversations section div:nth-child(2) p span {
+    color: black;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body .lesConversations section .date-messsage p {
+    font-weight: bold;
+    color: black;
+}
+
+body .lesConversations section div:nth-child(2) p a span:nth-child(1) {
+    margin-bottom: 5px;
+
+}
+
+.get-message::-webkit-scrollbar {
+    display: none;
+}
+
+.get-message {
+
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+
+.get-message header {
+    display: none;
+}
+
+
+body .main-user-discussion::-webkit-scrollbar {
+    display: none;
+}
+
+body .main-user-discussion .lesConversations {
+    display: none;
+}
+
+body .main-user-discussion .section-message-user {
+
+    margin: 0 auto;
+}
+
+body .main-user-discussion .section-message-user .photo-nom-user {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+    background-color: #257180;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+}
+
+body .main-user-discussion .section-message-user .photo-nom-user .image-profil {
+    height: 40px;
+    width: 40px;
+    background-color: #01204E;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    margin-right: 10px;
+}
+
+body .main-user-discussion .section-message-user .photo-nom-user div p {
+    color: black;
+    font-weight: bold;
+}
+
+body .main-user-discussion .section-message-user #lesMessages {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+}
+
+body .main-user-discussion .section-message-user #lesMessages p {
+    text-align: justify;
+    max-width: 85%;
+    margin-bottom: 5px;
+    background-color: #257180;
+    padding: 0.5rem;
+    color: white;
+    border-radius: 15px;
+    word-break: break-all;
+}
+
+body .main-user-discussion .section-message-user #lesMessages .current-user {
+    align-self: flex-end;
+
+}
+
+body .main-user-discussion .section-message-user #lesMessages .other-user {
+    align-self: flex-start;
+
+}
+
+body .main-user-discussion .section-message-user form {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    border-radius: 0;
+    background-color: #257180;
+}
+
+body .main-user-discussion .section-message-user form {
+    display: flex;
+}
+
+body .main-user-discussion .section-message-user form .form-message {
+    margin-right: 5px;
+    width: 90%;
+}
+
+body .main-user-discussion .section-message-user form .form-message div {
+    display: flex;
+    width: 100%;
+}
+
+body .main-user-discussion .section-message-user form .form-message div textarea {
+
+    width: 100%;
+    outline: none;
+    background-color: #01204E;
+    border: 0;
+    color: #FFFFFF;
+    padding: 10px;
+    border-radius: 15px;
+    resize: none;
+}
+
+body .main-user-discussion .section-message-user form .form-message div textarea::placeholder {
+
+    color: #FFFFFF;
+    line-height: 30px;
+}
+
+body .main-user-discussion .section-message-user form .btn-send-message {
+
+    align-self: flex-end;
+    background-color: #01204E;
+    border: 0;
+    padding: 5px;
+}
+
+body .main-user-discussion .section-message-user form .btn-send-message svg {
+    width: 20px;
+    fill: white;
     cursor: pointer;
 }
 

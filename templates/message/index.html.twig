@@ -3,34 +3,8 @@
 {% block title %}Message{% endblock %}
 
 {% block body %}
+    <main>{{ include('message/conversation.html.twig') }}</main>
 
-    <section class="">
-        {% for conversation in conversations %}
-            <section>
-                <div>
-                    <img src="" alt="">
-
-                </div>
-                <div>
-                    {% for user in conversation.otherUsers %}
-                        <p>
-                            <a href="{{ path('app_message_show',{'hash':conversation.hash}) }}">
-
-                                {% if user.isDelete !=true %}
-                                    {{ user.firstName }}
-                                {% else %}
-                                    Utilisateur supprimé
-                                {% endif %}
-                            </a>
-                        </p>
-                    {% endfor %}
-                </div>
-                <div>
-                    <p></p>
-                </div>
-            </section>
-        {% endfor %}
-    </section>
 
 
 {% endblock %}

@@ -19,10 +19,12 @@
     {% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
+{% set currentRoute = app.request.attributes.get('_route') %}
+
 <header>
 
     <h1>MatchAge </h1>
-    {% set currentRoute = app.request.attributes.get('_route') %}
+
     {% if currentRoute != 'search_progress' and currentRoute != 'app_message_show' %}
 
     {% endif %}

@@ -38,15 +38,22 @@ class MessageController extends AbstractController
         // Pour chaque conversation, récupére les autres utilisateurs
         foreach ($conversations as $conversation) {
             $otherUsers = [];
+
             foreach ($conversation->getUser() as $participant) {
                 if ($participant !== $user) {
                     $otherUsers[] = $participant;
                 }
             }
+            //dernier message de chaque conversation
+
+            $lastMessage = $conversation->getMessage()->last();
+
             $deuxiemeUtilisateur[] = [
                 'conversation' => $conversation,
                 'otherUsers' => $otherUsers,
-                'hash' => $hashidsService->encode($conversation->getId())
+                'lastMessage' => $lastMessage,
+                'hash' => $hashidsService->encode($conversation->getId()),
+
             ];
         }
 
@@ -95,10 +102,15 @@ class MessageController extends AbstractController
                         $otherUsers[] = $participant;
                     }
                 }
+
+                //dernier message de chaque conversation
+
+                $lastMessage = $uneConversation->getMessage()->last();
                 $deuxiemeUtilisateur[] = [
                     'conversation' => $uneConversation,
                     'otherUsers' => $otherUsers,
-                    'hash' => $hashidsService->encode($uneConversation->getId())
+                    'hash' => $hashidsService->encode($uneConversation->getId()),
+                    'lastMessage' => $lastMessage,
                 ];
             }
 
@@ -143,8 +155,8 @@ class MessageController extends AbstractController
             'form' => $form->createView(),
             'messages' => $lesMessages,
             'currentUser' => $user,
-            'conversation' => $hashidsService->encode($id),
-            'allConversations' => $deuxiemeUtilisateur,
+            'laConversation' => $hashidsService->encode($id),
+            'conversations' => $deuxiemeUtilisateur,
             'user' => $user,
             'admin' => $is_admin,
         ]);
