@@ -1,12 +1,20 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 
+    <main class="main-search-found">
+        <h2>Détail sur l'utilisateur trouvé :</h2>
+        <section class="section-search-results">
+            <div>
+                <p><span>Prénom :</span>{{ matchName.firstname|capitalize }}</p>
+            </div>
+            <div>
+                <p><span>Age :</span>{{ matchName.age }} </p>
+            </div>
+            <div>
+                <p><span>Civilite :</span>{{ matchName.civilite.civiliteName }} </p>
+            </div>
 
-    <h2>Information sur l'utilisateur trouvé :</h2>
-    <p>Prénom : {{ matchName.firstname|capitalize }}</p>
-    <p>Age : {{ matchName.age }}</p>
-    <p>Civilite : {{ matchName.civilite.civiliteName }}
-
+        </section>
 
 
         {{ form_start(form) }}
@@ -14,5 +22,7 @@
         {{ form_end(form) }}
 
 
-    <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p>
+        <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p>
+    </main>
+
 {% endblock %}

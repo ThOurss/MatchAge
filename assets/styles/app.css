@@ -939,6 +939,30 @@ body .main-user-discussion .section-message-user form .btn-send-message svg {
     cursor: pointer;
 }
 
+body .main-search-found h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+body .main-search-found .section-search-results {
+    max-width: 95%;
+    margin: 0 auto 20px;
+
+}
+
+body .main-search-found .section-search-results div:not(:last-of-type) {
+    margin-bottom: 10px;
+}
+
+body .main-search-found .section-search-results div p {
+    display: flex;
+    justify-content: space-between;
+}
+
+body .main-search-found .section-search-results div p span {
+    font-weight: bold;
+}
+
 @keyframes rotateimg {
     from {
         transform: rotate(0deg);

@@ -9,6 +9,8 @@ use App\Entity\User;
 use App\Form\MatchType;
 use App\Form\SearchType;
 use App\Repository\MatchUserRepository;
+use App\Repository\UserRepository;
+use App\Service\HashidsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -60,7 +62,7 @@ class AccueilController extends AbstractController
     }
 
     #[route('/search', name: 'search_progress')]
-    public function search(Security $security, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
+    public function search(HashidsService $hashidsService,Security $security, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
     {
         $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN'); // Utilisateur connecté
@@ -71,7 +73,7 @@ class AccueilController extends AbstractController
             if ($user->isSearchComplete()) {
                 $match = $matchUserRepository->findLastMatchForUser($user->getId());
                 $matchName = $matchUserRepository->findOtherUserInMatch($match->getId(), $user->getId());
-                return $this->redirectToRoute('match_found', ['id' => $matchName->getId()]);
+                return $this->redirectToRoute('match_found', ['hash' => $hashidsService->encode($matchName->getId())]);
 
             }
             return $this->redirectToRoute('app_accueil');
@@ -123,7 +125,7 @@ class AccueilController extends AbstractController
             }
             // Associer avec le premier utilisateur trouvé
 
-            return $this->redirectToRoute('match_found', ['id' => $potentialMatches[0]->getId()]);
+            return $this->redirectToRoute('match_found', ['hash' => $hashidsService->encode($potentialMatches[0]->getId())]);
 
         }
 
@@ -150,12 +152,13 @@ class AccueilController extends AbstractController
         return $this->redirectToRoute('app_accueil');
     }
 
-    #[route('/match_find/{id}', name: 'match_found')]
-    public function matchFound(User $id, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, Security $security): Response
+    #[route('/match_find/{hash}', name: 'match_found')]
+    public function matchFound(string $hash,HashidsService $hashidsService,UserRepository $userRepository,Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, Security $security): Response
     {
         $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN');
-        $userMatch = $entityManager->getRepository(User::class)->findOneBy(['id' => $id]);
+        $idUser = $hashidsService->decode($hash);
+        $userMatch = $userRepository->findOneBy(['id' => $idUser]);
 
         $form = $this->createForm(MatchType::class);
         $form->handleRequest($request);
