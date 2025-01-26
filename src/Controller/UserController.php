@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Config\Security\PasswordHasherConfig;
 
 #[Route('/user')]
 final class UserController extends AbstractController
@@ -80,7 +81,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/{hash}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager, Security $security, HashidsService $hashidsService): Response
+    public function edit(UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $entityManager, Security $security, HashidsService $hashidsService): Response
     {
         $user = $security->getUser();
         if (!$user) {
@@ -93,6 +94,13 @@ final class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('inscriptionUser')->isClicked()) {
+                $plainPassword = $form->get('password')->getData();
+
+                // Hachez le mot de passe
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
+
+                $entityManager->persist($user);
                 $entityManager->flush();
 
                 return $this->redirectToRoute('app_user_edit', ['hash' => $hashidsService->encode($user->getId())], Response::HTTP_SEE_OTHER);
