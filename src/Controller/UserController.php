@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
+use App\Service\HashidsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -78,35 +79,46 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    #[Route('/{hash}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, EntityManagerInterface $entityManager, Security $security, HashidsService $hashidsService): Response
     {
+        $user = $security->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+        $is_admin = $security->isGranted('ROLE_ADMIN');
 
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            if ($form->get('inscriptionUser')->isClicked()) {
+                $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_user_edit', ['hash' => $hashidsService->encode($user->getId())], Response::HTTP_SEE_OTHER);
+            } else {
+                return $this->redirectToRoute('app_user_delete', ['hash' => $hashidsService->encode($user->getId())], Response::HTTP_SEE_OTHER);
+            }
+
         }
 
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
-
+            'admin' => $is_admin,
         ]);
     }
 
-    #[Route('/delte/{id}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    #[Route('/delete/{hash}', name: 'app_user_delete')]
+    public function delete(string $hash, Request $request, EntityManagerInterface $entityManager, HashidsService $hashidsService, Security $security, UserRepository $userRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($user);
-            $entityManager->flush();
-        }
+        $idUser = $hashidsService->decode($hash);
+        $userRemove = $userRepository->findOneBy(['id' => $idUser]);
 
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        $userRemove->setIsDelete(true);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_logout', [], Response::HTTP_SEE_OTHER);
     }
 
 

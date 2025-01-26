@@ -5,9 +5,7 @@
 
 {% block body %}
     <main>
-        {% if error %}
-            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+
         <div class=" logo-page-accueil ">
             <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge" class="logo-accueil" id="test-img"
                  data-add-class-target="target">
@@ -30,7 +28,9 @@
             </div>
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-
+            {% if error %}
+                <div class="invalid-feedback">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
         </form>
     </main>
 

@@ -37,9 +37,15 @@
                        class="{% if app.request.attributes.get('_route')=='app_accueil' %}navActive{% endif %}"><img>Accueil
                     </a>
                 </li>
+                {% if user %}
+                    <li>
+                        <a href="{{ path('app_user_edit',{'hash':hashid_encode(user.id)}) }} "
+                           class="{% if app.request.attributes.get('_route')=='app_user_edit' %}navActive{% endif %}">Profil</a>
+                    </li>
+                {% endif %}
                 <li>
                     <a href="{{ path('app_message') }}"
-                       class="{% if app.request.attributes.get('_route')=='app_message' %}navActive{% endif %} "><img>Message</a>
+                       class="{% if app.request.pathinfo starts with '/message' %}navActive{% endif %} "><img>Message</a>
                 </li>
                 {% if user is null %}
                     <li>

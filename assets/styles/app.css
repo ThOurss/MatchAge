@@ -10,7 +10,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-p, label, legend, select, input {
+p, label, legend, select, input, div {
     font-size: 14px;
     @media screen and (min-width: 992px) {
         font-size: 16px;
@@ -27,6 +27,11 @@ body {
     }
 }
 
+.invalid-feedback {
+    margin-top: 0.8rem;
+    color: #b90000
+}
+
 body header {
     display: flex;
     justify-content: space-between;
@@ -37,6 +42,7 @@ body header {
     @media screen and (min-width: 767px) {
         display: block;
         width: 22vw;
+        min-width: 22vw;
         min-height: 100vh;
         height: auto;
         border-right: 1px solid #707070;
@@ -45,12 +51,15 @@ body header {
     }
     @media screen and (min-width: 992px) {
         width: 17vw;
+        min-width: 17vw;
     }
     @media screen and (min-width: 1200px) {
         width: 15vw;
+        min-width: 15vw;
     }
     @media screen and (min-width: 1400px) {
         width: 13vw;
+        min-width: 13vw;
     }
 }
 
@@ -518,6 +527,7 @@ body .main-inscription form .connexion-inscription {
     }
 }
 
+
 body .main-inscription form div:not(:last-of-type) {
     margin-bottom: 20px;
 }
@@ -615,6 +625,7 @@ body .main-inscription form button {
     cursor: pointer;
 }
 
+
 body .main-accueil form {
     width: 100%;
     max-width: 95%;
@@ -647,11 +658,11 @@ body .main-accueil form div button {
 }
 
 body .lesConversations {
-    max-width: 95%;
-    margin: 0 auto;
+
+
     @media screen and (min-width: 992px) {
         max-width: 35%;
-        margin: 0 0 0 20px;
+
 
     }
     @media screen and (min-width: 1200px) {
@@ -659,6 +670,7 @@ body .lesConversations {
     }
     @media screen and (min-width: 1400px) {
         max-width: 25%;
+
     }
 }
 
@@ -668,10 +680,22 @@ body .lesConversations section a {
     align-items: center;
     justify-content: space-between;
     text-decoration: none;
+    max-width: 95%;
+    margin: 0 auto;
+    @media screen and (min-width: 992px) {
+
+        margin: 0 0 0 20px;
+
+    }
 }
 
 body .lesConversations section:not(:last-of-type) {
-    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #707070;
+}
+
+body .lesConversations section:not(:first-of-type) {
+    padding-top: 10px;
 
 }
 
@@ -727,6 +751,9 @@ body .lesConversations section div:nth-child(2) p a span:nth-child(1) {
 
 .get-message header {
     display: none;
+    @media screen and (min-width: 992px) {
+        display: block;
+    }
 }
 
 
@@ -734,13 +761,49 @@ body .main-user-discussion::-webkit-scrollbar {
     display: none;
 }
 
+body .main-user-discussion {
+    overflow: hidden;
+    @media screen and (min-width: 767px) {
+        margin-top: 0;
+        width: 100%;
+    }
+    @media screen and (min-width: 992px) {
+        display: flex;
+    }
+}
+
 body .main-user-discussion .lesConversations {
     display: none;
+    @media screen and (min-width: 992px) {
+        display: block;
+        border-right: 1px solid #707070;
+        padding-top: 1rem;
+        width: 100%;
+
+    }
+}
+
+body .main-user-discussion .lesConversations section a {
+    margin: 0 10px;
+    column-gap: 5px;
 }
 
 body .main-user-discussion .section-message-user {
 
     margin: 0 auto;
+    @media screen and (min-width: 992px) {
+        max-width: 65%;
+        width: 100%;
+
+    }
+    @media screen and (min-width: 1200px) {
+        max-width: 70%;
+    }
+    @media screen and (min-width: 1400px) {
+        max-width: 75%;
+
+    }
+
 }
 
 body .main-user-discussion .section-message-user .photo-nom-user {
@@ -752,6 +815,20 @@ body .main-user-discussion .section-message-user .photo-nom-user {
     padding: 10px;
     position: sticky;
     top: 0;
+}
+
+body .main-user-discussion .section-message-user .photo-nom-user .fleche-back {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    @media screen and (min-width: 992px) {
+        display: none;
+    }
+}
+
+body .main-user-discussion .section-message-user .photo-nom-user .fleche-back a svg {
+
+    color: #FFFFFF;
 }
 
 body .main-user-discussion .section-message-user .photo-nom-user .image-profil {
@@ -766,14 +843,23 @@ body .main-user-discussion .section-message-user .photo-nom-user .image-profil {
 }
 
 body .main-user-discussion .section-message-user .photo-nom-user div p {
-    color: black;
+    color: #FFFFFF;
     font-weight: bold;
+
 }
+
 
 body .main-user-discussion .section-message-user #lesMessages {
     display: flex;
     flex-direction: column;
     padding: 0 10px;
+    height: calc(100vh - 150px);
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+body .main-user-discussion .section-message-user #lesMessages::-webkit-scrollbar {
+    display: none;
 }
 
 body .main-user-discussion .section-message-user #lesMessages p {
@@ -784,7 +870,7 @@ body .main-user-discussion .section-message-user #lesMessages p {
     padding: 0.5rem;
     color: white;
     border-radius: 15px;
-    word-break: break-all;
+    word-break: break-word;
 }
 
 body .main-user-discussion .section-message-user #lesMessages .current-user {

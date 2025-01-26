@@ -29,8 +29,10 @@ class AccueilController extends AbstractController
         $user = $security->getUser();
 
         $is_admin = $security->isGranted('ROLE_ADMIN');
+
         $form = $this->createForm(SearchType::class);
         $form->handleRequest($request);
+
         $matches = [];
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->getUser(); // Utilisateur connecté
@@ -149,7 +151,7 @@ class AccueilController extends AbstractController
     }
 
     #[route('/match_find/{id}', name: 'match_found')]
-    public function matchFound(User $id, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
+    public function matchFound(User $id, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, Security $security): Response
     {
         $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN');

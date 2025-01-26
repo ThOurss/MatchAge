@@ -14,7 +14,15 @@
     {{ form_row(form.password) }}
     <div class="mention-obligatoire"><p>* Mention obligatoire</p></div>
 
-    <button class="btn">{{ button_label|default("S'inscrire") }}</button>
+
+    {% if app.request.attributes.get('_route')=='app_user_edit' %}
+        {{ form_row(form.inscriptionUser, {'label': "Mettre à jour"}) }}
+        {{ form_row(form.deleteUser,{'label': "Supprimer le compte"}) }}
+    {% else %}
+        {{ form_row(form.inscriptionUser, {'label': "S'inscrire"}) }}
+    {% endif %}
+
+    
 </section>
 
 
