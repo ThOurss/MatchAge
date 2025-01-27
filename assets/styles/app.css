@@ -947,6 +947,12 @@ body .main-search-found h2 {
 body .main-search-found .section-search-results {
     max-width: 95%;
     margin: 0 auto 20px;
+    @media screen and (min-width: 992px) {
+        max-width: 55%;
+    }
+    @media screen and (min-width: 1200px) {
+        max-width: 35%;
+    }
 
 }
 
@@ -961,6 +967,40 @@ body .main-search-found .section-search-results div p {
 
 body .main-search-found .section-search-results div p span {
     font-weight: bold;
+}
+
+body .main-search-found form {
+    max-width: 95%;
+    width: 100%;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+body .main-search-found form div {
+    display: flex;
+    justify-content: center;
+}
+
+body .main-search-found form div button {
+    height: 50px;
+    background-color: #01204E;
+    font-size: 16px;
+    color: white;
+    width: 100%;
+    border: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    @media screen and (min-width: 767px) {
+        width: 60%;
+    }
+    @media screen and (min-width: 1200px) {
+        width: 40%;
+    }
+}
+
+body .main-search-found form div:nth-of-type(1) {
+    margin-bottom: 10px;
 }
 
 @keyframes rotateimg {
