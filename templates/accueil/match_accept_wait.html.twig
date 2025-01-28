@@ -1,31 +1,50 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 
+    <main class="main-search-found">
+        <h2>Détail sur l'utilisateur trouvé :</h2>
+        <section class="section-search-results">
+            <div>
+                <p><span>Prénom :</span>{{ matchName.firstname|capitalize }}</p>
+            </div>
+            <div>
+                <p><span>Age :</span>{{ matchName.age }} </p>
+            </div>
+            <div>
+                <p><span>Civilite :</span>{{ matchName.civilite.civiliteName }} </p>
+            </div>
+            <div>
+                {% if statut.id == 2 %}
+                    <p><span>Statut:</span> L'utilisateur a accepté le match </p>
+                {% elseif statut.id == 3 %}
+                    <p><span>Statut:</span> L'utilisateur a refusé le match </p>
+                {% else %}
+                    <p><span>Statut:</span> L'utilisateur n'a pas pris sa décision </p>
+                {% endif %}
+            </div>
+        </section>
 
-    <h2>Information sur l'utilisateur trouvé :</h2>
-    <p>Prénom : {{ matchName.firstname|capitalize }}</p>
-    <p>Age : {{ matchName.age }}</p>
-    <p>Civilite : {{ matchName.civilite.civiliteName }}
 
-    {% if statut.id == 2 %}
-        <p>Statut: L'utilisateur a accepté le match </p>
-    {% elseif statut.id == 3 %}
-        <p>Statut: L'utilisateur a refusé le match </p>
-    {% else %}
-        <p>Statut: L'utilisateur n'a pas pris sa décision </p>
-    {% endif %}
+        {% if statut.id == 3 %}
+            <form action="{{ path('delete_matchUser', { id: matchUser.id }) }}" method="post">
+                <div><input type="hidden" name="_token" value="{{ csrf_token('delete' ~ matchUser.id) }}">
+                    <button type="submit" class="btn btn-danger">Retourner à l'accueil</button>
+                </div>
+
+            </form>
+        {% elseif statut.id == 2 %}
+            <div class="choix-actions">
+                <div>
+                    <p><a href="{{ path('app_message') }}">Envoyer un message</a></p>
+                </div>
+                <div><p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p></div>
+            </div>
 
 
-    {% if statut.id == 3 %}
-        <form action="{{ path('delete_matchUser', { id: matchUser.id }) }}" method="post">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ matchUser.id) }}">
-            <button type="submit" class="btn btn-danger">Supprimer le match et retourner à l'accueil</button>
-        </form>
-    {% elseif statut.id == 2 %}
-        <p><a href="{{ path('app_message') }}">Envoyer un message</a></p>
-        <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p>
-    {% else %}
-        <p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p>
-    {% endif %}
+        {% else %}
+            <div class="choix-actions"><p><a href="{{ path('app_accueil') }}">Retour à l'accueil</a></p></div>
+
+        {% endif %}</main>
+
 
 {% endblock %}

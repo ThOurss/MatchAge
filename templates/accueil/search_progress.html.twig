@@ -5,15 +5,16 @@
 {% endblock %}
 
 {% block body %}
-    <main>
+    <main class="main-search-progress">
         <div class=" logo-page-accueil ">
             <img src="{{ asset('images/logo.svg') }}" alt="Logo matchAge" class="logo-accueil search-actif"
                  id="test-img"
                  data-add-class-target="target">
 
         </div>
-        <p>Recherche en cours... Veuillez patienter.</p>
-        <a href="{{ path('search_cancel') }}">Annuler la recherche</a>
+        <div><p>Recherche en cours... Veuillez patienter.</p></div>
+        <div><a href="{{ path('search_cancel') }}">Annuler la recherche</a></div>
+
     </main>
 
 {% endblock %}

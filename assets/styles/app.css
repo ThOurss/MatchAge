@@ -1003,6 +1003,83 @@ body .main-search-found form div:nth-of-type(1) {
     margin-bottom: 10px;
 }
 
+body .main-search-found .choix-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 95%;
+    margin: 0 auto;
+    @media screen and (min-width: 767px) {
+        width: 60%;
+    }
+    @media screen and (min-width: 1200px) {
+        width: 40%;
+    }
+}
+
+body .main-search-found .choix-actions div {
+    width: 100%;
+}
+
+body .main-search-found .choix-actions div:nth-of-type(1) {
+    margin-bottom: 5px;
+}
+
+body .main-search-found .choix-actions p {
+    height: 50px;
+
+    background-color: #01204E;
+    font-size: 16px;
+    color: white;
+    width: 100%;
+    border: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+body .main-search-found .choix-actions p a {
+    text-decoration: none;
+    color: white;
+
+}
+
+body .main-search-progress div {
+    text-align: center;
+}
+
+body .main-search-progress div:nth-of-type(3) {
+    width: 100%;
+    max-width: 95%;
+    display: flex;
+    justify-content: center;
+    margin: 5px auto 0;
+    @media screen and (min-width: 767px) {
+        width: 60%;
+    }
+    @media screen and (min-width: 1200px) {
+        width: 40%;
+    }
+}
+
+body .main-search-progress div:nth-of-type(3) a {
+    height: 50px;
+    text-decoration: none;
+    background-color: #01204E;
+    font-size: 16px;
+    color: white;
+    width: 100%;
+    border: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @keyframes rotateimg {
     from {
         transform: rotate(0deg);

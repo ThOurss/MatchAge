@@ -62,7 +62,7 @@ class AccueilController extends AbstractController
     }
 
     #[route('/search', name: 'search_progress')]
-    public function search(HashidsService $hashidsService,Security $security, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
+    public function search(HashidsService $hashidsService, Security $security, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
     {
         $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN'); // Utilisateur connecté
@@ -153,7 +153,7 @@ class AccueilController extends AbstractController
     }
 
     #[route('/match_find/{hash}', name: 'match_found')]
-    public function matchFound(string $hash,HashidsService $hashidsService,UserRepository $userRepository,Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, Security $security): Response
+    public function matchFound(string $hash, HashidsService $hashidsService, UserRepository $userRepository, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, Security $security): Response
     {
         $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN');
@@ -213,12 +213,12 @@ class AccueilController extends AbstractController
                 $entityManager->flush();
 
                 if ($match->getVersion() != 3) {
-                    return $this->redirectToRoute('match_accept', ['id' => $userMatch->getId()]);
+                    return $this->redirectToRoute('match_accept', ['hash' => $hashidsService->encode($userMatch->getId())]);
 
                 } else {
                     if ($match->getMatchAccepted1()->getId() == 3 or $match->getMatchAccepted2()->getId() == 3) {
 
-                        return $this->redirectToRoute('match_accept', ['id' => $userMatch->getId()]);
+                        return $this->redirectToRoute('match_accept', ['hash' => $hashidsService->encode($userMatch->getId())]);
 
                     } elseif ($match->getMatchAccepted1()->getId() == 2 and $match->getMatchAccepted2()->getId() == 2) {
                         $conv = new conversation();
@@ -227,7 +227,7 @@ class AccueilController extends AbstractController
                         $entityManager->persist($conv);
                         $entityManager->flush();
 
-                        return $this->redirectToRoute('match_accept', ['id' => $userMatch->getId()]);
+                        return $this->redirectToRoute('match_accept', ['hash' => $hashidsService->encode($userMatch->getId())]);
 
                     }
 
@@ -246,8 +246,8 @@ class AccueilController extends AbstractController
         ]);
     }
 
-    #[Route('/match_accept/{id}', name: 'match_accept')]
-    public function matchAcceptWait(User $id, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, CsrfTokenManagerInterface $csrfTokenManager, Security $security): Response
+    #[Route('/match_accept/{hash}', name: 'match_accept')]
+    public function matchAcceptWait(string $hash, HashidsService $hashidsService, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository, CsrfTokenManagerInterface $csrfTokenManager, Security $security): Response
     {
 
         $user = $security->getUser();
@@ -256,8 +256,8 @@ class AccueilController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-
-        $userMatch = $entityManager->getRepository(User::class)->findOneBy(['id' => $id]);
+        $idDecode = $hashidsService->decode($hash);
+        $userMatch = $entityManager->getRepository(User::class)->findOneBy(['id' => $idDecode]);
         $match = $matchUserRepository->findMatchWithIdUser($user->getId(), $userMatch->getId());
         $csrfToken = $csrfTokenManager->getToken('delete_matchUser')->getValue();
         if ($match->getUser1()->getId() == $user->getId()) {
