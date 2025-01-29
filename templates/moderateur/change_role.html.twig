@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier les informations de {{ userModif.firstname }} {{ userModif.name }}{% endblock %}
+
+{% block body %}
+    <main class="main-inscription admin">
+        <h2>Modifier les informations de {{ userModif.firstname }} {{ userModif.name }}</h2>
+
+        {{ include('admin/_form.html.twig') }}
+
+
+    </main>
+
+{% endblock %}

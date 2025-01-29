@@ -27,6 +27,7 @@ class MessageController extends AbstractController
         $user = $security->getUser();
 
         $is_admin = $security->isGranted('ROLE_ADMIN');
+        $is_moderateur = $security->isGranted('ROLE_MODERATOR');
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
@@ -62,7 +63,7 @@ class MessageController extends AbstractController
             'conversations' => $deuxiemeUtilisateur,
             'user' => $user,
             'admin' => $is_admin,
-
+            'moderateur' => $is_moderateur,
         ]);
     }
 
@@ -79,6 +80,7 @@ class MessageController extends AbstractController
         $user = $security->getUser();
 
         $is_admin = $security->isGranted('ROLE_ADMIN');
+        $is_moderateur = $security->isGranted('ROLE_MODERATOR');
         $message = new Message();
 
         $conversation = $conversationRepository->find($id);
@@ -159,6 +161,7 @@ class MessageController extends AbstractController
             'conversations' => $deuxiemeUtilisateur,
             'user' => $user,
             'admin' => $is_admin,
+            'moderateur' => $is_moderateur,
         ]);
     }
 

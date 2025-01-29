@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+
+    Gestion des utilisateurs
+{% endblock %}
+
+{% block body %}
+    <main class="main-admin-users">
+        <h2>
+
+            Gestion des utilisateurs
+
+        </h2>
+
+        <section class="grid-admin-users">
+            {% for user in allusers %}
+                <section>
+                    <div>Prénom:<span>{{ user.firstName }}</span></div>
+                    <div>Nom:<span>{{ user.name }}</span></div>
+                    <div>Date de naissance:<span>{{ user.dateOfBirth ? user.dateOfBirth|date('d-m-Y') : '' }}</span>
+                    </div>
+                    <div>Age:<span>{{ user.age }}</span></div>
+                    <div>Téléphone:<span>{{ user.phone }}</span></div>
+                    <div class="pays-email-gestion-user">Email:<span>{{ user.email }}</span></div>
+                    <div>Civilité:<span>{{ user.civilite.civiliteName }}</span></div>
+                    <div class="pays-email-gestion-user">Pays:<span
+                                title="{{ user.pays.namePays }}">{{ user.pays.namePays }}</span></div>
+                    <div>Role:<span>{{ user.role.roleName }}</span></div>
+                    <div class="btn-gestion-user">
+                        <div><a href="{{ path('moderateur_change_role',{'hash':hashid_encode(user.id)}) }}">Modifier</a>
+                        </div>
+
+                        <form action="{{ path('moderateur_delete_user', { 'hash': hashid_encode(user.id) }) }}"
+                              method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+
+                            <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Êtes vous sûrs ?')">Supprimer l'utilisateur
+                            </button>
+
+                        </form>
+                    </div>
+                </section>
+            {% endfor %}
+        </section>
+    </main>
+{% endblock %}

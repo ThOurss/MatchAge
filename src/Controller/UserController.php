@@ -34,6 +34,7 @@ final class UserController extends AbstractController
         $user = $security->getUser();
 
         $is_admin = $security->isGranted('ROLE_ADMIN');
+        $is_moderateur = $security->isGranted('ROLE_MODERATOR');
         $role = $entityManager->getRepository(Role::class)->findOneBy(['id' => 7]);
 
 
@@ -62,6 +63,7 @@ final class UserController extends AbstractController
             'user' => $user,
             'admin' => $is_admin,
             'form' => $form,
+            'moderateur' => $is_moderateur,
         ]);
     }
 
@@ -88,6 +90,7 @@ final class UserController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         $is_admin = $security->isGranted('ROLE_ADMIN');
+        $is_moderateur = $security->isGranted('ROLE_MODERATOR');
 
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -114,6 +117,7 @@ final class UserController extends AbstractController
             'user' => $user,
             'form' => $form,
             'admin' => $is_admin,
+            'moderateur' => $is_moderateur,
         ]);
     }
 

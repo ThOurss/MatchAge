@@ -23,9 +23,8 @@ class LoginController extends AbstractController
     {
         $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN');
-        if ($is_admin) {
-            dd('test');
-        }
+        $is_moderateur = $security->isGranted('ROLE_MODERATOR');
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
@@ -37,7 +36,8 @@ class LoginController extends AbstractController
             'last_username' => $lastUsername,
             'error' => $error,
             'admin' => $is_admin,
-            'user' => $user
+            'user' => $user,
+            'moderateur' => $is_moderateur
         ]);
     }
 

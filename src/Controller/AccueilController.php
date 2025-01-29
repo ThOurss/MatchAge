@@ -31,7 +31,7 @@ class AccueilController extends AbstractController
         $user = $security->getUser();
 
         $is_admin = $security->isGranted('ROLE_ADMIN');
-
+        $is_moderateur = $security->isGranted('ROLE_MODERATOR');
         $form = $this->createForm(SearchType::class);
         $form->handleRequest($request);
 
@@ -58,14 +58,16 @@ class AccueilController extends AbstractController
             'match' => $matches,
             'admin' => $is_admin,
             'user' => $user,
+            'moderateur' => $is_moderateur,
         ]);
     }
 
     #[route('/search', name: 'search_progress')]
     public function search(HashidsService $hashidsService, Security $security, Request $request, EntityManagerInterface $entityManager, MatchUserRepository $matchUserRepository): Response
     {
-        $user = $security->getUser();
-        $is_admin = $security->isGranted('ROLE_ADMIN'); // Utilisateur connecté
+        $user = $security->getUser();// Utilisateur connecté
+        $is_admin = $security->isGranted('ROLE_ADMIN');
+        $is_moderateur = $security->isGranted('ROLE_MODERATOR');
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
@@ -133,6 +135,7 @@ class AccueilController extends AbstractController
         return $this->render('accueil/search_progress.html.twig', [
             'user' => $user,
             'admin' => $is_admin,
+            'moderateur' => $is_moderateur,
         ]);
     }
 
@@ -157,6 +160,7 @@ class AccueilController extends AbstractController
     {
         $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN');
+        $is_moderateur = $security->isGranted('ROLE_MODERATOR');
         $idUser = $hashidsService->decode($hash);
         $userMatch = $userRepository->findOneBy(['id' => $idUser]);
 
@@ -243,6 +247,7 @@ class AccueilController extends AbstractController
             'matchName' => $userMatch,
             'user' => $user,
             'admin' => $is_admin,
+            'moderateur' => $is_moderateur,
         ]);
     }
 
@@ -252,6 +257,7 @@ class AccueilController extends AbstractController
 
         $user = $security->getUser();
         $is_admin = $security->isGranted('ROLE_ADMIN');
+        $is_moderateur = $security->isGranted('ROLE_MODERATOR');
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
@@ -272,6 +278,7 @@ class AccueilController extends AbstractController
             'matchUser' => $match,
             'user' => $user,
             'admin' => $is_admin,
+            'moderateur' => $is_moderateur,
         ]);
     }
 
